@@ -1,0 +1,181 @@
+# Copyright 2014 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# This file contains common system config stuff for the Android build.
+
+# NOTE: Because Chrome OS builds may depend on targets built with the Android
+# toolchain, this GNI file may be read and processed from within Chrome OS
+# toolchains. Checking |is_android| here would therefore be too restrictive.
+if (is_android || is_chromeos) {
+  import("abi.gni")
+
+  # We are using a separate declare_args block for only this argument so that
+  # we can decide if we have to pull in definitions from the internal config
+  # early.
+  declare_args() {
+    # Enables using the internal Chrome for Android repository. The default
+    # value depends on whether the repository is available, and if it's not but
+    # this argument is manually set to True, the generation will fail.
+    # The main purpose of this argument is to avoid having to maintain 2
+    # repositories to support both public only and internal builds.
+
+    # The default to use for android:minSdkVersion for targets that do
+    # not explicitly set it.
+    default_min_sdk_version = 21
+  }
+
+  declare_args() {
+    # Android API level for 32 bits platforms
+    android32_ndk_api_level = default_min_sdk_version
+
+    # Android API level for 64 bits platforms
+    if (default_min_sdk_version < 21) {
+      android64_ndk_api_level = 21
+    } else {
+      android64_ndk_api_level = default_min_sdk_version
+    }
+  }
+
+  import("//build/config/android/sdk.gni")
+  declare_args() {
+    # Which Android SDK to use.
+    android_sdk_release = default_android_sdk_release
+  }
+  
+  if (!defined(default_android_ndk_root)) {
+    if (host_os == "linux") {
+      default_android_ndk_root = "//third_party/android_ndk/android-ndk-r22b-linux"
+    } else {
+      default_android_ndk_root = "//third_party/android_ndk/android-ndk-r22b-darwin"
+    }
+    default_android_ndk_version = "r22"
+    default_android_ndk_major_version = 22
+  } else {
+    assert(defined(default_android_ndk_version))
+    assert(defined(default_android_ndk_major_version))
+  }
+
+  declare_args() {
+    android_ndk_root = default_android_ndk_root
+    android_ndk_version = default_android_ndk_version
+    android_ndk_major_version = default_android_ndk_major_version
+
+    # Libc++ library directory. Override to use a custom libc++ binary.
+    android_libcpp_lib_dir = ""
+
+    # Android versionCode for android_apk()s that don't explicitly set one.
+    android_default_version_code = "1"
+
+    # Android versionName for android_apk()s that don't explicitly set one.
+    android_default_version_name = "Developer Build"
+
+    # Forced Android versionCode
+    android_override_version_code = ""
+
+    # Forced Android versionName
+    android_override_version_name = ""
+
+    # Java debug on Android. Having this on enables multidexing, and turning it
+    # off will enable proguard.
+    is_java_debug = is_debug
+
+    # Mark APKs as android:debuggable="true".
+    debuggable_apks = !is_official_build
+
+    # When true, updates all android_aar_prebuilt() .info files during gn gen.
+    # Refer to android_aar_prebuilt() for more details.
+    update_android_aar_prebuilts = false
+
+
+
+    # Causes expectation failures to break the build, otherwise, just warns on
+    # stderr and writes a failure file to $android_configuration_failure_dir:
+    fail_on_android_expectations = false
+
+    # Controls whether proguard obfuscation is enabled for targets
+    # configured to use it.
+    enable_proguard_obfuscation = true
+
+    # Controls whether |short_resource_paths| and |strip_resource_names| are
+    # respected. Useful when trying to analyze APKs using tools that do not
+    # support mapping these names.
+    enable_arsc_obfuscation = true
+  }
+
+  # We need a second declare_args block to make sure we are using the overridden
+  # value of the arguments set above.
+  declare_args() {
+
+    # Whether java assertions and Preconditions checks are enabled.
+    enable_java_asserts = is_java_debug || dcheck_always_on
+
+    # Reduce build time by using d8 incremental build.
+    enable_incremental_d8 = true
+
+    # Use hashed symbol names to reduce JNI symbol overhead.
+    use_hashed_jni_names = !is_java_debug
+
+    # Desugar lambdas and interfaces methods using Desugar.jar rather than
+    # D8/R8. D8/R8 will still be used for backported method desugaring.
+    enable_bazel_desugar = true
+
+    # Enables Java library desugaring.
+    # This will cause an extra classes.dex file to appear in every apk.
+    enable_jdk_library_desugaring = true
+  }
+
+  # Host stuff -----------------------------------------------------------------
+
+  # Defines the name the Android build gives to the current host CPU
+  # architecture, which is different than the names GN uses.
+  if (host_cpu == "x64") {
+    android_host_arch = "x86_64"
+  } else if (host_cpu == "x86") {
+    android_host_arch = "x86"
+  } else {
+    assert(false, "Need Android toolchain support for your build CPU arch.")
+  }
+
+  # Defines the name the Android build gives to the current host CPU
+  # architecture, which is different than the names GN uses.
+  if (host_os == "linux") {
+    android_host_os = "linux"
+  } else if (host_os == "mac") {
+    android_host_os = "darwin"
+  } else {
+    assert(false, "Need Android toolchain support for your build OS.")
+  }
+
+  # Location of libgcc. This is only needed for the current GN toolchain, so we
+  # only need to define the current one, rather than one for every platform
+  # like the toolchain roots.
+  if (current_cpu == "x86") {
+    android_prebuilt_arch = "android-x86"
+    _binary_prefix = "i686-linux-android"
+  } else if (current_cpu == "arm") {
+    android_prebuilt_arch = "android-arm"
+    _binary_prefix = "arm-linux-androideabi"
+  } else if (current_cpu == "mipsel") {
+    android_prebuilt_arch = "android-mips"
+    _binary_prefix = "mipsel-linux-android"
+  } else if (current_cpu == "x64") {
+    android_prebuilt_arch = "android-x86_64"
+    _binary_prefix = "x86_64-linux-android"
+  } else if (current_cpu == "arm64") {
+    android_prebuilt_arch = "android-arm64"
+    _binary_prefix = "aarch64-linux-android"
+  } else if (current_cpu == "mips64el") {
+    android_prebuilt_arch = "android-mips64"
+    _binary_prefix = "mips64el-linux-android"
+  } else {
+    assert(false, "Need android libgcc support for your target arch.")
+  }
+
+  android_toolchain_root = "$android_ndk_root/toolchains/llvm/prebuilt/${android_host_os}-${android_host_arch}"
+  android_tool_prefix = "$android_toolchain_root/bin/$_binary_prefix-"
+  android_readelf = "${android_tool_prefix}readelf"
+  android_objcopy = "${android_tool_prefix}objcopy"
+  android_gdbserver =
+      "$android_ndk_root/prebuilt/$android_prebuilt_arch/gdbserver/gdbserver"
+}

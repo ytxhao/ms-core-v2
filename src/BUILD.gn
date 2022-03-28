@@ -1,0 +1,19 @@
+import("third_party/ms-core/ms-core.gni")
+print("is_ios:$is_ios is_android:$is_android is_linux:$is_linux")
+group("default") {
+  deps = []
+  if (is_ios) {
+    deps += [
+      "//third_party/ms-core/sdk:framework_objc",
+    ]
+  } else if (is_android) {
+    deps += [
+      "//third_party/ms-core/sdk/android:libms-framework",
+    ]
+  } else if (is_linux) {
+    deps += [
+      "//third_party/ms-core/sdk/linux:linux",
+    ]
+  }
+}
+

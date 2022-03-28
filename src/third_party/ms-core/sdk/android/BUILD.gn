@@ -1,0 +1,44 @@
+# Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS.  All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+print("======== 12 android:$is_android")
+if (is_android) {
+  print("======== 13 android:$is_android")
+  import("//build/config/android/config.gni")
+  print("======== 14 android:$is_android")
+  import("//build/config/android/rules.gni")
+  print("======== 15 android:$is_android")
+  import("../../ms-core.gni")
+  print("======== 16 android:$is_android")
+
+  group("android") {
+    if (is_android) {
+      public_deps = [
+        ":libms-framework",
+      ]
+    }
+  }
+  dist_jar("libms-framework") {
+    _target_dir_name = get_label_info(":$target_name", "dir")
+    output = "${root_out_dir}/lib.java${_target_dir_name}/${target_name}.jar"
+    direct_deps_only = true
+    use_unprocessed_jars = true
+    requires_android = true
+    no_build_hooks = true
+
+    deps = [
+      ":ms_java"
+    ]
+  }
+
+  rtc_android_library("ms_java") {
+    sources = [
+      "api/media/ushow/ms/Constants.java",
+    ]
+    deps = []
+  }
+}
