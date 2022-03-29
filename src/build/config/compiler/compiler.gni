@@ -139,7 +139,6 @@ if (is_apple || is_linux || is_chromeos) {
       # but overall shrinks binaries considerably by avoiding huge unwind
       # tables.
       (current_cpu == "x86" && !exclude_unwind_tables && optimize_for_size) ||
-      using_sanitizer ||
       # For caller-callee instrumentation version which needs frame pointers to
       # get the caller address.
       use_call_graph
@@ -147,7 +146,7 @@ if (is_apple || is_linux || is_chromeos) {
   # Explicitly ask for frame pointers, otherwise:
   # * Stacks may be missing for sanitizer and profiling builds.
   # * Debug tcmalloc can crash (crbug.com/636489).
-  enable_frame_pointers = using_sanitizer || enable_profiling || is_debug
+  enable_frame_pointers = enable_profiling || is_debug
 }
 
 # In general assume that if we have frame pointers then we can use them to
@@ -250,11 +249,6 @@ if (symbol_level == -1) {
     } else {
       symbol_level = 1
     }
-  } else if (using_sanitizer) {
-    # Sanitizers need line table info for stack traces. They don't need type
-    # info or variable info, so we can leave that out to speed up the build.
-    # Sanitizers also require symbols for filename suppressions to work.
-    symbol_level = 1
   } else if ((!is_nacl && !is_linux && !is_chromeos && !is_fuchsia &&
               current_os != "aix") || is_debug || is_official_build ||
              is_chromecast) {

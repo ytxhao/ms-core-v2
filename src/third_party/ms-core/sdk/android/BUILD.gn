@@ -18,27 +18,38 @@ if (is_android) {
   group("android") {
     if (is_android) {
       public_deps = [
-        ":libms-framework",
+        ":libms-core",
+        # ":libms-framework",
       ]
     }
   }
-  dist_jar("libms-framework") {
-    _target_dir_name = get_label_info(":$target_name", "dir")
-    output = "${root_out_dir}/lib.java${_target_dir_name}/${target_name}.jar"
-    direct_deps_only = true
-    use_unprocessed_jars = true
-    requires_android = true
-    no_build_hooks = true
+  # dist_jar("libms-framework") {
+  #   _target_dir_name = get_label_info(":$target_name", "dir")
+  #   output = "${root_out_dir}/lib.java${_target_dir_name}/${target_name}.jar"
+  #   direct_deps_only = true
+  #   use_unprocessed_jars = true
+  #   requires_android = true
+  #   no_build_hooks = true
 
-    deps = [
-      ":ms_java"
-    ]
-  }
+  #   deps = [
+  #     ":ms_java"
+  #   ]
+  # }
 
-  rtc_android_library("ms_java") {
-    sources = [
-      "api/media/ushow/ms/Constants.java",
+  # rtc_android_library("ms_java") {
+  #   sources = [
+  #     "api/media/ushow/ms/Constants.java",
+  #   ]
+  #   deps = []
+  # }
+
+  rtc_shared_library("libms-core") {
+    visibility = [ "*" ]
+    sources = [ "src/test.cc" ]
+    ldflags = [
+      "-Wl,--build-id",
     ]
-    deps = []
+
+    output_extension = "so"
   }
 }

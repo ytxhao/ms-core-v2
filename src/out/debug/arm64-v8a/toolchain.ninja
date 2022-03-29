@@ -1,0 +1,57 @@
+rule copy
+  command = ln -f ${in} ${out} 2>/dev/null || (rm -rf ${out} && cp -af ${in} ${out})
+  description = COPY ${in} ${out}
+rule alink
+  command = rm -f ${out} && "//third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android-ar" ${arflags} -r -c -s -D ${out} @"${out}.rsp"
+  description = AR ${out}
+  rspfile = ${out}.rsp
+  rspfile_content = ${in}
+rule solink
+  command = python "../../../build/toolchain/gcc_solink_wrapper.py" --readelf="//third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android-readelf" --nm="//third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android-nm" --strip=//third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android-strip  --sofile="${root_out_dir}/lib.unstripped/${target_output_name}${output_extension}" --tocfile="${output_dir}/${target_output_name}${output_extension}.TOC" --output="${output_dir}/${target_output_name}${output_extension}" -- //third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang++ -shared -Wl,-soname="${target_output_name}${output_extension}" ${ldflags} -o "${root_out_dir}/lib.unstripped/${target_output_name}${output_extension}" @"${output_dir}/${target_output_name}${output_extension}.rsp"
+  description = SOLINK ${output_dir}/${target_output_name}${output_extension}
+  rspfile = ${output_dir}/${target_output_name}${output_extension}.rsp
+  rspfile_content = -Wl,--whole-archive ${in} ${solibs} -Wl,--no-whole-archive ${libs}
+  pool = build_toolchain_link_pool
+  restat = 1
+rule solink_module
+  command = //third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang++ -shared ${ldflags} -o "${root_out_dir}/lib.unstripped/${target_output_name}${output_extension}" -Wl,-soname="${target_output_name}${output_extension}" @"${output_dir}/${target_output_name}${output_extension}.rsp" && //third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android-strip -o "${output_dir}/${target_output_name}${output_extension}" "${root_out_dir}/lib.unstripped/${target_output_name}${output_extension}"
+  description = SOLINK_MODULE ${output_dir}/${target_output_name}${output_extension}
+  rspfile = ${output_dir}/${target_output_name}${output_extension}.rsp
+  rspfile_content = -Wl,--whole-archive ${in} ${solibs} -Wl,--no-whole-archive ${libs}
+  pool = build_toolchain_link_pool
+rule link
+  command = python "../../../build/toolchain/gcc_link_wrapper.py" --output="${output_dir}/${target_output_name}${output_extension}" --strip="//third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android-strip" --unstripped-file="${root_out_dir}/exe.unstripped/${target_output_name}${output_extension}" -- //third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang++ ${ldflags} -o "${root_out_dir}/exe.unstripped/${target_output_name}${output_extension}" -Wl,--start-group @"${output_dir}/${target_output_name}${output_extension}.rsp" ${solibs} -Wl,--end-group  ${libs}
+  description = LINK ${output_dir}/${target_output_name}${output_extension}
+  rspfile = ${output_dir}/${target_output_name}${output_extension}.rsp
+  rspfile_content = ${in}
+  pool = build_toolchain_link_pool
+rule stamp
+  command = touch ${out}
+  description = STAMP ${out}
+rule asm
+  command = false //third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang -MMD -MF ${out}.d ${defines} ${include_dirs} ${asmflags} -c ${in} -o ${out}
+  description = ASM ${out}
+  depfile = ${out}.d
+  deps = gcc
+rule cc
+  command = false //third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang -MMD -MF ${out}.d ${defines} ${include_dirs} ${cflags} ${cflags_c} -c ${in} -o ${out}
+  description = CC ${out}
+  depfile = ${out}.d
+  deps = gcc
+rule cxx
+  command = false //third_party/android_ndk/android-ndk-r22b-darwin/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang++ -MMD -MF ${out}.d ${defines} ${include_dirs} ${cflags} ${cflags_cc} -c ${in} -o ${out}
+  description = CXX ${out}
+  depfile = ${out}.d
+  deps = gcc
+
+build obj/default.stamp: stamp ./libms-core.so.TOC
+build obj/build/config/common_deps.stamp: stamp
+build obj/build/config/executable_deps.stamp: stamp obj/build/config/common_deps.stamp
+build obj/build/config/loadable_module_deps.stamp: stamp obj/build/config/common_deps.stamp
+build obj/build/config/shared_library_deps.stamp: stamp obj/build/config/common_deps.stamp
+build obj/third_party/ms-core/poison_audio_codecs.stamp: stamp
+build obj/third_party/ms-core/poison_default_task_queue.stamp: stamp
+build obj/third_party/ms-core/poison_rtc_json.stamp: stamp
+build obj/third_party/ms-core/poison_software_video_codecs.stamp: stamp
+build obj/third_party/ms-core/sdk/android/android.stamp: stamp ./libms-core.so.TOC
+subninja obj/third_party/ms-core/sdk/android/libms-core.ninja

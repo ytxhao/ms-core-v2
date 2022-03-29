@@ -1,0 +1,18 @@
+defines = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DWEBRTC_ARCH_ARM64 -DWEBRTC_HAS_NEON -DWEBRTC_POSIX -DWEBRTC_LINUX -DWEBRTC_ANDROID
+include_dirs = -I../../.. -Igen
+cflags = -fno-ident -fno-strict-aliasing --param=ssp-buffer-size=4 -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fcrash-diagnostics-dir=../../../tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -Xclang -fdebug-compilation-dir -Xclang . -no-canonical-prefixes -Wall -Werror -Wextra -Wimplicit-fallthrough -Wthread-safety -Wno-missing-field-initializers -Wno-unused-parameter -Wno-c++11-narrowing -Wno-unneeded-internal-declaration -Wno-undefined-var-template -Wno-psabi -Wno-ignored-pragma-optimize -Wno-implicit-int-float-conversion -Wno-final-dtor-non-final-class -Wno-builtin-assume-aligned-alignment -Wno-deprecated-copy -Wno-non-c-typedef-for-linkage -Wmax-tokens -Oz -fdata-sections -ffunction-sections -fno-omit-frame-pointer -g1 -fdebug-info-for-profiling -Wno-shorten-64-to-32
+cflags_cc = -Wno-undefined-bool-conversion -Wno-tautological-undefined-compare -std=c++14 -fno-trigraphs -Wno-trigraphs -fno-exceptions
+label_name = libms-core
+root_out_dir = .
+target_out_dir = obj/third_party/ms-core/sdk/android
+target_output_name = libms-core
+
+build obj/third_party/ms-core/sdk/android/libms-core/test.o: cxx ../../../third_party/ms-core/sdk/android/src/test.cc
+
+build ./libms-core.so ./libms-core.so.TOC ./lib.unstripped/libms-core.so: solink obj/third_party/ms-core/sdk/android/libms-core/test.o || obj/build/config/shared_library_deps.stamp
+  ldflags = -Wl,--build-id -fuse-ld=lld -Wl,--fatal-warnings -Wl,--build-id -fPIC -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,-z,max-page-size=4096 -Wl,--color-diagnostics -Wl,--no-rosegment -Werror -Wl,--gc-sections
+  libs = -ldl -lm
+  frameworks =
+  swiftmodules =
+  output_extension = .so
+  output_dir = .

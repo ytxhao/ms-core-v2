@@ -41,7 +41,7 @@ NEEDED_SO_FILES = ['libms-core.so']
 JAR_FILE = 'lib.java/third_party/core/sdk/android/libms-framework.jar'
 MANIFEST_FILE = 'sdk/android/AndroidManifest.xml'
 TARGETS = [
-    'third_party/ms-core/sdk/android:libms-framework',
+    # 'third_party/ms-core/sdk/android:libms-framework',
     'third_party/ms-core/sdk/android:libms-core',
 ]
 
@@ -123,6 +123,7 @@ def _RunNinja(output_directory, args):
         output_directory
     ]
     logging.info('_RunNinja  yuhaoo args:%s', args)
+    logging.info('_RunNinja  yuhaoo cmd:%s', cmd)
     cmd.extend(args)
     logging.debug('Running: %r', cmd)
     subprocess.check_call(cmd)
@@ -251,11 +252,11 @@ def BuildAar(archs,
         Build(build_dir, arch, use_goma, extra_gn_args, extra_gn_switches,
               extra_ninja_switches)
 
-    with zipfile.ZipFile(output_file, 'w') as aar_file:
-        # Architecture doesn't matter here, arbitrarily using the first one.
-        CollectCommon(aar_file, build_dir, archs[0])
-        for arch in archs:
-            Collect(aar_file, build_dir, arch)
+    # with zipfile.ZipFile(output_file, 'w') as aar_file:
+    #     # Architecture doesn't matter here, arbitrarily using the first one.
+    #     CollectCommon(aar_file, build_dir, archs[0])
+    #     for arch in archs:
+    #         Collect(aar_file, build_dir, arch)
 
     # license_dir = os.path.dirname(os.path.realpath(output_file))
     # GenerateLicenses(license_dir, build_dir, archs)

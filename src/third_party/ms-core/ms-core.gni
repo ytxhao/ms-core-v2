@@ -854,8 +854,8 @@ template("rtc_shared_library") {
     configs -= invoker.suppressed_configs
     public_configs = [
       rtc_common_inherited_config,
-      absl_include_config,
-      absl_define_config,
+      # absl_include_config,
+      # absl_define_config,
     ]
     if (defined(testonly) && testonly) {
       public_configs += [ absl_flags_config ]

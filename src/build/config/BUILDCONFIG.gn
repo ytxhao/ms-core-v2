@@ -333,8 +333,7 @@ default_compiler_configs = [
   "//build/config/compiler:thin_archive",
   "//build/config/compiler:thinlto_optimize_default",
   "//build/config/compiler:default_init_stack_vars",
-  "//build/config/compiler/pgo:default_pgo_flags",
-  "//build/config/coverage:default_coverage",
+  # "//build/config/coverage:default_coverage",
   #"//build/config/sanitizers:default_sanitizer_flags",
 ]
 
@@ -349,28 +348,28 @@ if (is_win) {
   ]
 }
 
-if (is_posix) {
-  if (current_os != "aix") {
-    default_compiler_configs +=
-        [ "//build/config/gcc:symbol_visibility_hidden" ]
-  }
-}
+# if (is_posix) {
+#   if (current_os != "aix") {
+#     default_compiler_configs +=
+#         [ "//build/config/gcc:symbol_visibility_hidden" ]
+#   }
+# }
 
-if (is_fuchsia) {
-  default_compiler_configs += [ "//build/config/gcc:symbol_visibility_hidden" ]
-}
+# if (is_fuchsia) {
+#   default_compiler_configs += [ "//build/config/gcc:symbol_visibility_hidden" ]
+# }
 
-if (is_android) {
-  default_compiler_configs +=
-      [ "//build/config/android:default_orderfile_instrumentation" ]
-}
+# if (is_android) {
+#   default_compiler_configs +=
+#       [ "//build/config/android:default_orderfile_instrumentation" ]
+# }
 
-if (is_clang && !is_nacl) {
-  default_compiler_configs += [
-    "//build/config/clang:find_bad_constructs",
-    "//build/config/clang:extra_warnings",
-  ]
-}
+# if (is_clang && !is_nacl) {
+#   default_compiler_configs += [
+#     "//build/config/clang:find_bad_constructs",
+#     "//build/config/clang:extra_warnings",
+#   ]
+# }
 
 # Debug/release-related defines.
 if (is_debug) {
@@ -432,12 +431,12 @@ if (is_win) {
   default_shared_library_configs += [ "//build/config/win:cfi_linker" ]
 }
 
-if (is_android) {
-  # Strip native JNI exports from shared libraries by default. Binaries that
-  # want this can remove this config.
-  default_shared_library_configs +=
-      [ "//build/config/android:hide_all_but_jni_onload" ]
-}
+# if (is_android) {
+#   # Strip native JNI exports from shared libraries by default. Binaries that
+#   # want this can remove this config.
+#   default_shared_library_configs +=
+#       [ "//build/config/android:hide_all_but_jni_onload" ]
+# }
 set_defaults("shared_library") {
   configs = default_shared_library_configs
 }
@@ -445,9 +444,9 @@ set_defaults("loadable_module") {
   configs = default_shared_library_configs
 
   # loadable_modules are generally used by other libs, not just via JNI.
-  if (is_android) {
-    configs -= [ "//build/config/android:hide_all_but_jni_onload" ]
-  }
+  # if (is_android) {
+  #   configs -= [ "//build/config/android:hide_all_but_jni_onload" ]
+  # }
 }
 
 # A helper for forwarding testonly and visibility.
