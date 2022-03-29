@@ -5,15 +5,10 @@
 # tree. An additional intellectual property rights grant can be found
 # in the file PATENTS.  All contributing project authors may
 # be found in the AUTHORS file in the root of the source tree.
-print("======== 12 android:$is_android")
 if (is_android) {
-  print("======== 13 android:$is_android")
   import("//build/config/android/config.gni")
-  print("======== 14 android:$is_android")
   import("//build/config/android/rules.gni")
-  print("======== 15 android:$is_android")
   import("../../ms-core.gni")
-  print("======== 16 android:$is_android")
 
   group("android") {
     if (is_android) {

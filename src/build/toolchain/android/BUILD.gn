@@ -52,7 +52,7 @@ template("android_clang_toolchain") {
     # _prefix = rebase_path("$clang_base_path/bin", root_build_dir)
     print("=====================_android_tool_prefix:$_android_tool_prefix")
     # print("=====================_tool_prefix:$_tool_prefix")
-    
+    # _android_prefix_clang = rebase_path("$clang_base_path/bin", root_build_dir)
     cc = _android_prefix_clang + "clang"
     cxx = _android_prefix_clang + "clang++"
     ar = _android_tool_prefix + "ar"
@@ -62,7 +62,15 @@ template("android_clang_toolchain") {
     strip = _android_tool_prefix + "strip"
     if (_use_debug_fission) {
       dwp = _android_tool_prefix + "dwp"
+      dwp = rebase_path(dwp)
     }
+    cc = rebase_path(cc)
+    cxx = rebase_path(cxx)
+    ar = rebase_path(ar)
+    ld = rebase_path(ld)
+    readelf = rebase_path(readelf)
+    nm = rebase_path(nm)
+    strip = rebase_path(strip)
     print("=====================y cc:$cc")
     print("=====================y cxx:$cxx")
     print("=====================y ar:$ar")
