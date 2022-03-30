@@ -69,10 +69,7 @@ def chmod(directory):
     subprocess.call(cmd, shell=True)
 
 def get_build_args(args):
-    build_arg_list = ['rtc_include_pulse_audio=false', 'rtc_include_ilbc=false',
-                      'rtc_build_examples=false', 'rtc_include_tests=false',
-                      'rtc_build_libvpx=false', 'rtc_disable_metrics=true',
-                      'rtc_enable_protobuf=false']
+    build_arg_list = []
     if args.os == "a":    # Android
         # build_arg_list.append('clang_use_chrome_plugins=false')
         build_arg_list.append('is_debug=false' if args.build == 'r' else 'is_debug=true')

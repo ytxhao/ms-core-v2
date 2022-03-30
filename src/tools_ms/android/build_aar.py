@@ -170,7 +170,7 @@ def _GetArmVersion(arch):
         raise Exception('Unknown arch: ' + arch)
 
 
-def Build(build_dir, arch, use_goma, extra_gn_args, extra_gn_switches,
+def Build(build_dir, arch, extra_gn_args, extra_gn_switches,
           extra_ninja_switches):
     """Generates target architecture using GN and builds it using ninja."""
     logging.info('Building: %s', arch)
@@ -180,9 +180,7 @@ def Build(build_dir, arch, use_goma, extra_gn_args, extra_gn_switches,
         'target_os': 'android',
         'is_debug': False,
         'is_component_build': False,
-        'rtc_include_tests': False,
         'target_cpu': _GetTargetCpu(arch),
-        'use_goma': use_goma
     }
     logging.info('Building gn_args: %s', gn_args)
     arm_version = _GetArmVersion(arch)
@@ -198,8 +196,6 @@ def Build(build_dir, arch, use_goma, extra_gn_args, extra_gn_switches,
     _RunGN(gn_args_list)
 
     ninja_args = TARGETS[:]
-    if use_goma:
-        ninja_args.extend(['-j', '200'])
     ninja_args.extend(extra_ninja_switches)
     _RunNinja(output_directory, ninja_args)
 
@@ -231,7 +227,6 @@ def GenerateLicenses(output_dir, build_dir, archs):
 
 def BuildAar(archs,
              output_file,
-             use_goma=False,
              extra_gn_args=None,
              ext_build_dir=None,
              extra_gn_switches=None,
@@ -242,21 +237,20 @@ def BuildAar(archs,
     build_dir = ext_build_dir if ext_build_dir else tempfile.mkdtemp()
     logging.info('BuildAar  yuhaoo archs:%s', archs)
     logging.info('BuildAar  yuhaoo output_file:%s', output_file)
-    logging.info('BuildAar  yuhaoo use_goma:%s', use_goma)
     logging.info('BuildAar  yuhaoo extra_gn_args:%s', extra_gn_args)
     logging.info('BuildAar  yuhaoo ext_build_dir:%s', ext_build_dir)
     logging.info('BuildAar  yuhaoo extra_gn_switches:%s', extra_gn_switches)
     logging.info('BuildAar  yuhaoo extra_ninja_switches:%s', extra_ninja_switches)
     logging.info('BuildAar  yuhaoo build_dir:%s', build_dir)
     for arch in archs:
-        Build(build_dir, arch, use_goma, extra_gn_args, extra_gn_switches,
+        Build(build_dir, arch, extra_gn_args, extra_gn_switches,
               extra_ninja_switches)
 
-    with zipfile.ZipFile(output_file, 'w') as aar_file:
-        # Architecture doesn't matter here, arbitrarily using the first one.
-        CollectCommon(aar_file, build_dir, archs[0])
-        for arch in archs:
-            Collect(aar_file, build_dir, arch)
+    # with zipfile.ZipFile(output_file, 'w') as aar_file:
+    #     # Architecture doesn't matter here, arbitrarily using the first one.
+    #     CollectCommon(aar_file, build_dir, archs[0])
+    #     for arch in archs:
+    #         Collect(aar_file, build_dir, arch)
 
     license_dir = os.path.dirname(os.path.realpath(output_file))
     GenerateLicenses(license_dir, build_dir, archs)
@@ -277,7 +271,7 @@ def main():
     # logging.info("MANIFEST_FILE:%s", MANIFEST_FILE)
     # logging.info('info  yuhaoo args:%s', args)
     
-    BuildAar(args.arch, args.output, args.use_goma, args.extra_gn_args,
+    BuildAar(args.arch, args.output, args.extra_gn_args,
              args.build_dir, args.extra_gn_switches, args.extra_ninja_switches)
 
 if __name__ == '__main__':

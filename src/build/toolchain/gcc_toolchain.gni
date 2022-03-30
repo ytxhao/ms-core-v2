@@ -157,11 +157,11 @@ template("gcc_toolchain") {
     } else {
       toolchain_uses_rbe = false
     }
-    if (defined(toolchain_args.use_goma)) {
-      toolchain_uses_goma = toolchain_args.use_goma
-    } else {
+    # if (defined(toolchain_args.use_goma)) {
+    #   toolchain_uses_goma = toolchain_args.use_goma
+    # } else {
       toolchain_uses_goma = false
-    }
+    # }
 
     # x86_64-nacl-* is ELF-32 and Goma/RBE won't support ELF-32.
     if (toolchain_uses_goma &&
@@ -173,7 +173,7 @@ template("gcc_toolchain") {
     if (defined(toolchain_args.cc_wrapper)) {
       toolchain_cc_wrapper = toolchain_args.cc_wrapper
     } else {
-      toolchain_cc_wrapper = false
+      toolchain_cc_wrapper = ""
     }
     assert(!(toolchain_uses_rbe && toolchain_uses_goma),
            "Goma and RBE can't be used together.")
@@ -199,12 +199,15 @@ template("gcc_toolchain") {
 
       # C/C++ (clang) rewrapper prefix to use when use_rbe is true.
       compiler_prefix = "${rbe_bin_dir}/rewrapper -cfg=${toolchain_rbe_cc_cfg_file} -exec_root=${rbe_exec_root} "
+      print("+++++++++++++++++++++1")
     } else if (toolchain_uses_goma &&
                (!defined(invoker_toolchain_args.needs_gomacc_path_arg) ||
                 !invoker_toolchain_args.needs_gomacc_path_arg)) {
       compiler_prefix = "${goma_path} "
+      print("+++++++++++++++++++++2")
     } else {
       compiler_prefix = "${toolchain_cc_wrapper} "
+      print("+++++++++++++++++++++3")
     }
     if (use_goma_thin_lto && toolchain_uses_goma && use_thin_lto) {
       # goma_ld.py uses autoninja in an attempt to set a reasonable
@@ -310,7 +313,7 @@ template("gcc_toolchain") {
 
     # Object files go in this directory.
     object_subdir = "{{target_out_dir}}/{{label_name}}"
-
+    print("=========cc1 : $cc")
     tool("cc") {
       depfile = "{{output}}.d"
       precompiled_header_type = "gcc"

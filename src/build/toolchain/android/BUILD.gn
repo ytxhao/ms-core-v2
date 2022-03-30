@@ -95,7 +95,6 @@ android_clang_toolchain("android_clang_x86") {
     # link any binaries that are generated with coverage instrumentation.
     # Therefore we need to turn off 'use_clang_coverage' for this toolchain.
     # TODO(crbug.com/865376)
-    use_clang_coverage = false
 
     # This turns off all of the LaCrOS-specific flags. A LaCrOS build may use
     # |ash_clang_x64| toolchain, which is a chromeos toolchain, to build
@@ -135,7 +134,6 @@ android_clang_toolchain("android_clang_x64") {
     # link any binaries that are generated with coverage instrumentation.
     # Therefore we need to turn off 'use_clang_coverage' for this toolchain.
     # TODO(crbug.com/865376)
-    use_clang_coverage = false
 
     # This turns off all of the LaCrOS-specific flags. A LaCrOS build may use
     # |ash_clang_x64| toolchain, which is a chromeos toolchain, to build

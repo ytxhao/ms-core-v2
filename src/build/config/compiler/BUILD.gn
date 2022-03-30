@@ -222,7 +222,7 @@ if (is_android) {
   }
 }
 
-assert(!(llvm_force_head_revision && use_goma),
+assert(!(llvm_force_head_revision),
        "can't use goma with trunk clang")
 assert(!(llvm_force_head_revision && use_rbe), "can't use rbe with trunk clang")
 
