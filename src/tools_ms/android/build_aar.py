@@ -252,9 +252,6 @@ def BuildAar(archs,
     #     for arch in archs:
     #         Collect(aar_file, build_dir, arch)
 
-    license_dir = os.path.dirname(os.path.realpath(output_file))
-    GenerateLicenses(license_dir, build_dir, archs)
-
     if not ext_build_dir:
         shutil.rmtree(build_dir, True)
 
