@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Volumes/kingston/workspace/Library/Android/sdk/cmake/3.18.1/bin/ninja",
+      "-C",
+      "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/.cxx/Debug/1sp3h6c4/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Volumes/kingston/workspace/Library/Android/sdk/cmake/3.18.1/bin/ninja",
+    "-C",
+    "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/.cxx/Debug/1sp3h6c4/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "msl-core-jni::@6890427a1f51a3e7e1df": {
+      "artifactName": "msl-core-jni",
+      "abi": "x86_64",
+      "output": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cxx/Debug/1sp3h6c4/obj/x86_64/libmsl-core-jni.so",
+      "runtimeFiles": []
+    }
+  }
+}

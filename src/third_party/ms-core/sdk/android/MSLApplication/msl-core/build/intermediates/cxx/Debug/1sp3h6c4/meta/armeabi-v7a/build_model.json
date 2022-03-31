@@ -1,0 +1,168 @@
+{
+  "abi": "ARMEABI_V7A",
+  "info": {
+    "abi": "ARMEABI_V7A",
+    "bitness": 32,
+    "deprecated": false,
+    "default": true
+  },
+  "cxxBuildFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/.cxx/Debug/1sp3h6c4/armeabi-v7a",
+  "soFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cxx/Debug/1sp3h6c4/obj/armeabi-v7a",
+  "soRepublishFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cmake/debug/obj/armeabi-v7a",
+  "abiPlatformVersion": 21,
+  "cmake": {
+    "effectiveConfiguration": {
+      "inheritEnvironments": [],
+      "variables": []
+    }
+  },
+  "variant": {
+    "buildSystemArgumentList": [],
+    "cFlagsList": [],
+    "cppFlagsList": [
+      ""
+    ],
+    "variantName": "debug",
+    "soFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cxx/Debug/1sp3h6c4/obj",
+    "soRepublishFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cmake/debug/obj",
+    "cxxBuildFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/.cxx/Debug/1sp3h6c4",
+    "intermediatesFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cxx/Debug/1sp3h6c4",
+    "isDebuggableEnabled": true,
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
+    ],
+    "buildTargetSet": [],
+    "implicitBuildTargetSet": [],
+    "cmakeSettingsConfiguration": "android-gradle-plugin-predetermined-name",
+    "module": {
+      "cxxFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/.cxx",
+      "intermediatesBaseFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates",
+      "intermediatesFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cxx",
+      "gradleModulePathName": ":msl-core",
+      "moduleRootFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core",
+      "moduleBuildFile": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build.gradle",
+      "makeFile": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/src/main/cpp/CMakeLists.txt",
+      "buildSystem": "CMAKE",
+      "ndkFolder": "/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147",
+      "ndkVersion": "21.3.6528147",
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultStl": "LIBCXX_STATIC",
+      "ndkMetaPlatforms": {
+        "min": 16,
+        "max": 30,
+        "aliases": {
+          "20": 19,
+          "25": 24,
+          "J": 16,
+          "J-MR1": 17,
+          "J-MR2": 18,
+          "K": 19,
+          "L": 21,
+          "L-MR1": 22,
+          "M": 23,
+          "N": 24,
+          "N-MR1": 24,
+          "O": 26,
+          "O-MR1": 27,
+          "P": 28,
+          "Q": 29,
+          "R": 30
+        }
+      },
+      "ndkMetaAbiList": [
+        {
+          "abi": "ARMEABI_V7A",
+          "bitness": 32,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "ARM64_V8A",
+          "bitness": 64,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "X86",
+          "bitness": 32,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "X86_64",
+          "bitness": 64,
+          "deprecated": false,
+          "default": true
+        }
+      ],
+      "cmakeToolchainFile": "/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147/build/cmake/android.toolchain.cmake",
+      "cmake": {
+        "isValidCmakeAvailable": true,
+        "cmakeExe": "/Volumes/kingston/workspace/Library/Android/sdk/cmake/3.18.1/bin/cmake",
+        "minimumCmakeVersion": "3.18.1",
+        "ninjaExe": "/Volumes/kingston/workspace/Library/Android/sdk/cmake/3.18.1/bin/ninja"
+      },
+      "stlSharedObjectMap": {
+        "LIBCXX_SHARED": {
+          "ARMEABI_V7A": "/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/arm-linux-androideabi/libc++_shared.so",
+          "ARM64_V8A": "/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/aarch64-linux-android/libc++_shared.so",
+          "X86": "/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/libc++_shared.so",
+          "X86_64": "/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/x86_64-linux-android/libc++_shared.so"
+        },
+        "LIBCXX_STATIC": {},
+        "NONE": {},
+        "SYSTEM": {}
+      },
+      "project": {
+        "rootBuildGradleFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication",
+        "sdkFolder": "/Volumes/kingston/workspace/Library/Android/sdk",
+        "isBuildOnlyTargetAbiEnabled": true,
+        "isCmakeBuildCohabitationEnabled": false,
+        "isPrefabEnabled": false
+      },
+      "outputOptions": []
+    },
+    "prefabClassPathFileCollection": [],
+    "prefabPackageDirectoryListFileCollection": [],
+    "stlType": "c++_static",
+    "optimizationTag": "Debug"
+  },
+  "buildSettings": {
+    "environmentVariables": []
+  },
+  "prefabFolder": "/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/.cxx/Debug/1sp3h6c4/prefab/armeabi-v7a",
+  "isActiveAbi": true,
+  "fullConfigurationHash": "1sp3h6c4p436u1m5fo3z3u6t6g3g206v482x21574cv1y4ak4u4l4u2g604w",
+  "configurationArguments": [
+    "-H/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/src/main/cpp",
+    "-DCMAKE_SYSTEM_NAME\u003dAndroid",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON",
+    "-DCMAKE_SYSTEM_VERSION\u003d21",
+    "-DANDROID_PLATFORM\u003dandroid-21",
+    "-DANDROID_ABI\u003darmeabi-v7a",
+    "-DCMAKE_ANDROID_ARCH_ABI\u003darmeabi-v7a",
+    "-DANDROID_NDK\u003d/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147",
+    "-DCMAKE_ANDROID_NDK\u003d/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147",
+    "-DCMAKE_TOOLCHAIN_FILE\u003d/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147/build/cmake/android.toolchain.cmake",
+    "-DCMAKE_MAKE_PROGRAM\u003d/Volumes/kingston/workspace/Library/Android/sdk/cmake/3.18.1/bin/ninja",
+    "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003d/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cxx/Debug/1sp3h6c4/obj/armeabi-v7a",
+    "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003d/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cxx/Debug/1sp3h6c4/obj/armeabi-v7a",
+    "-DCMAKE_BUILD_TYPE\u003dDebug",
+    "-B/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/.cxx/Debug/1sp3h6c4/armeabi-v7a",
+    "-GNinja"
+  ]
+}

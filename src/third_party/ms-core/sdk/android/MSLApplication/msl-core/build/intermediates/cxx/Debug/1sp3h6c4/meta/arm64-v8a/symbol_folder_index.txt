@@ -1,0 +1,1 @@
+/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/build/intermediates/cxx/Debug/1sp3h6c4/obj/arm64-v8a
