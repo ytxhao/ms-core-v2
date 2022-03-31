@@ -65,27 +65,25 @@ template("dist_jar") {
     _deps = invoker.deps
   }
 
-  if (defined(invoker.override_build_config)) {
-    _build_config = invoker.override_build_config
-  } else {
-    _build_config = "$target_gen_dir/$target_name.build_config"
-    _build_config_target_name = "$target_name$build_config_target_suffix"
-    print("======= _build_config:$_build_config")
-    print("======= _build_config_target_name:$_build_config_target_name")
-    write_build_config(_build_config_target_name) {
-      type = "dist_jar"
-      supports_android = false
-      requires_android = false
-      possible_config_deps = _deps
-      print("======= _direct_deps_only:$_direct_deps_only")
-      ignore_dependency_public_deps = _direct_deps_only
-      build_config = _build_config
-    }
-
-    _deps += [ ":$_build_config_target_name" ]
+  _build_config = "$target_gen_dir/$target_name.build_config"
+  _build_config_target_name = "$target_name$build_config_target_suffix"
+  print("======= _build_config:$_build_config")
+  print("======= _build_config_target_name:$_build_config_target_name")
+  write_build_config(_build_config_target_name) {
+    type = "dist_jar"
+    supports_android = false
+    requires_android = false
+    possible_config_deps = _deps
+    print("======= _direct_deps_only:$_direct_deps_only")
+    ignore_dependency_public_deps = _direct_deps_only
+    build_config = _build_config
   }
 
+  _deps += [ ":$_build_config_target_name" ]
+  print("======= _jar_target_name:$_jar_target_name")
+  
   _rebased_build_config = rebase_path(_build_config, root_build_dir)
+  print("======= _rebased_build_config:$_rebased_build_config")
   action_with_pydeps(_jar_target_name) {
     forward_variables_from(invoker, [ "data" ])
     script = "//build/android/gyp/zip.py"

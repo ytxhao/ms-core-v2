@@ -41,8 +41,8 @@ NEEDED_SO_FILES = ['libms-core.so']
 JAR_FILE = 'lib.java/third_party/core/sdk/android/libms-framework.jar'
 MANIFEST_FILE = 'sdk/android/AndroidManifest.xml'
 TARGETS = [
-    'third_party/ms-core/sdk/android:libms-framework',
-    'third_party/ms-core/sdk/android:libms-core',
+    # 'third_party/ms-core/sdk/android:libms-framework',
+    'third_party/ms-core/sdk:libms-core',
 ]
 
 # sys.path.append(os.path.join(SCRIPT_DIR, '..', 'libs'))
@@ -246,11 +246,11 @@ def BuildAar(archs,
         Build(build_dir, arch, extra_gn_args, extra_gn_switches,
               extra_ninja_switches)
 
-    with zipfile.ZipFile(output_file, 'w') as aar_file:
-        # Architecture doesn't matter here, arbitrarily using the first one.
-        CollectCommon(aar_file, build_dir, archs[0])
-        for arch in archs:
-            Collect(aar_file, build_dir, arch)
+    # with zipfile.ZipFile(output_file, 'w') as aar_file:
+    #     # Architecture doesn't matter here, arbitrarily using the first one.
+    #     CollectCommon(aar_file, build_dir, archs[0])
+    #     for arch in archs:
+    #         Collect(aar_file, build_dir, arch)
 
     if not ext_build_dir:
         shutil.rmtree(build_dir, True)
