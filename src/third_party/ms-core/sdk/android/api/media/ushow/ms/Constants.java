@@ -1,0 +1,5 @@
+class Constants {
+    void test() {
+        
+    }
+}

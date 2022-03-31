@@ -25,7 +25,7 @@ declare_args() {
                 current_cpu == "arm" || current_cpu == "arm64" ||
                 current_cpu == "mipsel" || current_cpu == "mips64el"
 }
-print("=========sysroot:$sysroot ")
+# print("=========sysroot:$sysroot ")
 if (sysroot == "") {
   if (current_os == target_os && current_cpu == target_cpu &&
       target_sysroot != "") {
@@ -36,7 +36,7 @@ if (sysroot == "") {
 
     # Android uses unified headers, and thus a single compile time sysroot
     sysroot = "$android_toolchain_root/sysroot"
-    print("=========2 sysroot:$sysroot ")
+    # print("=========2 sysroot:$sysroot ")
   } else if ((is_linux || is_chromeos) && use_sysroot) {
     # By default build against a sysroot image downloaded from Cloud Storage
     # during gclient runhooks.

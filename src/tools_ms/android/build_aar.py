@@ -34,14 +34,14 @@ import zipfile
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(sys.argv[0]))
 SRC_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, os.pardir, os.pardir))
-CORE_DIR = os.path.normpath(os.path.join(SRC_DIR, 'third_party', 'core'))
+CORE_DIR = os.path.normpath(os.path.join(SRC_DIR, 'third_party', 'ms-core'))
 DEPOT_TOOLS_PATH = os.path.normpath(os.path.join(SRC_DIR, 'third_party', 'depot_tools'))
 DEFAULT_ARCHS = ['armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64']
 NEEDED_SO_FILES = ['libms-core.so']
 JAR_FILE = 'lib.java/third_party/core/sdk/android/libms-framework.jar'
 MANIFEST_FILE = 'sdk/android/AndroidManifest.xml'
 TARGETS = [
-    # 'third_party/ms-core/sdk/android:libms-framework',
+    'third_party/ms-core/sdk/android:libms-framework',
     'third_party/ms-core/sdk/android:libms-core',
 ]
 
@@ -204,7 +204,7 @@ def CollectCommon(aar_file, build_dir, arch):
     """Collects architecture independent files into the .aar-archive."""
     logging.info('Collecting common files.')
     output_directory = _GetOutputDirectory(build_dir, arch)
-    aar_file.write(os.path.join(WEBRTC_DIR, MANIFEST_FILE), 'AndroidManifest.xml')
+    aar_file.write(os.path.join(CORE_DIR, MANIFEST_FILE), 'AndroidManifest.xml')
     aar_file.write(os.path.join(output_directory, JAR_FILE), 'classes.jar')
 
 
@@ -219,10 +219,10 @@ def Collect(aar_file, build_dir, arch):
                        os.path.join(abi_dir, so_file))
 
 
-def GenerateLicenses(output_dir, build_dir, archs):
-    builder = LicenseBuilder(
-        [_GetOutputDirectory(build_dir, arch) for arch in archs], TARGETS)
-    builder.GenerateLicenseText(output_dir)
+# def GenerateLicenses(output_dir, build_dir, archs):
+#     builder = LicenseBuilder(
+#         [_GetOutputDirectory(build_dir, arch) for arch in archs], TARGETS)
+#     builder.GenerateLicenseText(output_dir)
 
 
 def BuildAar(archs,
@@ -246,11 +246,11 @@ def BuildAar(archs,
         Build(build_dir, arch, extra_gn_args, extra_gn_switches,
               extra_ninja_switches)
 
-    # with zipfile.ZipFile(output_file, 'w') as aar_file:
-    #     # Architecture doesn't matter here, arbitrarily using the first one.
-    #     CollectCommon(aar_file, build_dir, archs[0])
-    #     for arch in archs:
-    #         Collect(aar_file, build_dir, arch)
+    with zipfile.ZipFile(output_file, 'w') as aar_file:
+        # Architecture doesn't matter here, arbitrarily using the first one.
+        CollectCommon(aar_file, build_dir, archs[0])
+        for arch in archs:
+            Collect(aar_file, build_dir, arch)
 
     if not ext_build_dir:
         shutil.rmtree(build_dir, True)

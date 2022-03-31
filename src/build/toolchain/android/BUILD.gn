@@ -19,7 +19,7 @@ declare_args() {
 #  - binary_prefix
 #      Prefix of compiler executables.
 template("android_clang_toolchain") {
-  print("============target_name : $target_name")
+  # print("============target_name : $target_name")
   gcc_toolchain(target_name) {
     assert(defined(invoker.toolchain_args),
            "toolchain_args must be defined for android_clang_toolchain()")
@@ -50,7 +50,7 @@ template("android_clang_toolchain") {
     # _tool_prefix = rebase_path("$_android_tool_prefix", root_build_dir)
 
     # _prefix = rebase_path("$clang_base_path/bin", root_build_dir)
-    print("=====================_android_tool_prefix:$_android_tool_prefix")
+    # print("=====================_android_tool_prefix:$_android_tool_prefix")
     # print("=====================_tool_prefix:$_tool_prefix")
     # _android_prefix_clang = rebase_path("$clang_base_path/bin", root_build_dir)
     cc = _android_prefix_clang + "clang"
@@ -71,12 +71,12 @@ template("android_clang_toolchain") {
     readelf = rebase_path(readelf)
     nm = rebase_path(nm)
     strip = rebase_path(strip)
-    print("=====================y cc:$cc")
-    print("=====================y cxx:$cxx")
-    print("=====================y ar:$ar")
-    print("=====================y ld:$ld")
-    print("=====================y readelf:$readelf")
-    print("=====================y strip:$strip")
+    # print("=====================y cc:$cc")
+    # print("=====================y cxx:$cxx")
+    # print("=====================y ar:$ar")
+    # print("=====================y ld:$ld")
+    # print("=====================y readelf:$readelf")
+    # print("=====================y strip:$strip")
     use_unstripped_as_runtime_outputs = android_unstripped_runtime_outputs
 
     # Don't use .cr.so for loadable_modules since they are always loaded via
