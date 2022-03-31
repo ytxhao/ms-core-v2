@@ -6,8 +6,9 @@
 # Some projects (e.g. V8) do not have non-build directories DEPS'ed in.
 
 import("//build/config/android/config.gni")
+import("//build/config/android/internal_rules.gni")
 import("//build/config/compiler/compiler.gni")
-# import("//build/config/python.gni")
+import("//build/config/python.gni")
 # import("//build/config/rts.gni")
 # import("//build/config/zip.gni")
 import("//build/toolchain/toolchain.gni")
@@ -24,4 +25,203 @@ if (target_cpu == "arm") {
   _sanitizer_arch = "aarch64"
 } else if (target_cpu == "x86") {
   _sanitizer_arch = "i686"
+}
+
+# Combines all dependent .jar files into a single .jar file.
+#
+# Variables:
+#   output: Path to the output jar.
+#   override_build_config: Use a pre-existing .build_config. Must be of type
+#     "apk".
+#   use_interface_jars: Use all dependent interface .jars rather than
+#     implementation .jars.
+#   use_unprocessed_jars: Use unprocessed / undesugared .jars.
+#   direct_deps_only: Do not recurse on deps.
+#   jar_excluded_patterns (optional)
+#     List of globs for paths to exclude.
+#
+# Example
+#   dist_jar("lib_fatjar") {
+#     deps = [ ":my_java_lib" ]
+#     output = "$root_build_dir/MyLibrary.jar"
+#   }
+template("dist_jar") {
+  # TODO(crbug.com/1042017): Remove.
+  not_needed(invoker, [ "no_build_hooks" ])
+  forward_variables_from(invoker, TESTONLY_AND_VISIBILITY)
+  _use_interface_jars =
+      defined(invoker.use_interface_jars) && invoker.use_interface_jars
+  _use_unprocessed_jars =
+      defined(invoker.use_unprocessed_jars) && invoker.use_unprocessed_jars
+  _direct_deps_only =
+      defined(invoker.direct_deps_only) && invoker.direct_deps_only
+  assert(!(_use_unprocessed_jars && _use_interface_jars),
+          "Cannot set both use_interface_jars and use_unprocessed_jars")
+
+  _jar_target_name = target_name
+
+  _deps = []
+  if (defined(invoker.deps)) {
+    _deps = invoker.deps
+  }
+
+  if (defined(invoker.override_build_config)) {
+    _build_config = invoker.override_build_config
+  } else {
+    _build_config = "$target_gen_dir/$target_name.build_config"
+    _build_config_target_name = "$target_name$build_config_target_suffix"
+    print("======= _build_config:$_build_config")
+    print("======= _build_config_target_name:$_build_config_target_name")
+    write_build_config(_build_config_target_name) {
+      type = "dist_jar"
+      supports_android = false
+      requires_android = false
+      possible_config_deps = _deps
+      print("======= _direct_deps_only:$_direct_deps_only")
+      ignore_dependency_public_deps = _direct_deps_only
+      build_config = _build_config
+    }
+
+    _deps += [ ":$_build_config_target_name" ]
+  }
+
+  _rebased_build_config = rebase_path(_build_config, root_build_dir)
+  action_with_pydeps(_jar_target_name) {
+    forward_variables_from(invoker, [ "data" ])
+    script = "//build/android/gyp/zip.py"
+    depfile = "$target_gen_dir/$target_name.d"
+    deps = _deps
+
+    inputs = [ _build_config ]
+
+    outputs = [ invoker.output ]
+
+    args = [
+      "--depfile",
+      rebase_path(depfile, root_build_dir),
+      "--output",
+      rebase_path(invoker.output, root_build_dir),
+      "--no-compress",
+    ]
+
+    if (_direct_deps_only) {
+      if (_use_interface_jars) {
+        args += [ "--input-zips=@FileArg($_rebased_build_config:javac:interface_classpath)" ]
+      } else if (_use_unprocessed_jars) {
+        args += [
+          "--input-zips=@FileArg($_rebased_build_config:javac:classpath)",
+        ]
+      } else {
+        assert(
+            false,
+            "direct_deps_only does not work without use_interface_jars or use_unprocessed_jars")
+      }
+    } else {
+      if (_use_interface_jars) {
+        args += [ "--input-zips=@FileArg($_rebased_build_config:dist_jar:all_interface_jars)" ]
+      } else if (_use_unprocessed_jars) {
+        args += [ "--input-zips=@FileArg($_rebased_build_config:deps_info:javac_full_classpath)" ]
+      } else {
+        args += [ "--input-zips=@FileArg($_rebased_build_config:deps_info:device_classpath)" ]
+      }
+    }
+    _excludes = []
+    if (defined(invoker.jar_excluded_patterns)) {
+      _excludes += invoker.jar_excluded_patterns
+    }
+    if (_use_interface_jars) {
+      # Turbine adds files like: META-INF/TRANSITIVE/.../Foo.class
+      # These confuse proguard: https://crbug.com/1081443
+      _excludes += [ "META-INF/*" ]
+    }
+    if (_excludes != []) {
+      args += [ "--input-zips-excluded-globs=$_excludes" ]
+    }
+  }
+}
+
+# Declare a java library target
+#
+# Variables
+#   deps: Specifies the dependencies of this target. Java targets in this list
+#     will be added to the javac classpath.
+#   public_deps: Dependencies that this target exposes as part of its public API.
+#     public_deps do not need to be listed in both the 'deps' and 'public_deps' lists.
+#   annotation_processor_deps: List of java_annotation_processor targets to
+#     use when compiling.
+#
+#   jar_path: Path to a prebuilt jar. Mutually exclusive with sources &
+#     srcjar_deps.
+#   sources: List of .java files included in this library.
+#   srcjar_deps: List of srcjar dependencies. The .java files in the srcjars
+#     will be added to sources and be included in this library.
+#
+#   input_jars_paths: A list of paths to the jars that should be included
+#     in the compile-time classpath. These are in addition to library .jars
+#     that appear in deps.
+#
+#   chromium_code: If true, extra analysis warning/errors will be enabled.
+#   enable_errorprone: If true, enables the errorprone compiler.
+#   skip_build_server: If true, avoids sending tasks to the build server.
+#
+#   jar_excluded_patterns: List of patterns of .class files to exclude.
+#   jar_included_patterns: List of patterns of .class files to include.
+#     When omitted, all classes not matched by jar_excluded_patterns are
+#     included. When specified, all non-matching .class files are stripped.
+#
+#   low_classpath_priority: Indicates that the library should be placed at the
+#     end of the classpath. The default classpath order has libraries ordered
+#     before the libraries that they depend on. 'low_classpath_priority' is
+#     useful when one java_library() overrides another via
+#     'jar_excluded_patterns' and the overriding library does not depend on
+#     the overridee.
+#
+#   output_name: File name for the output .jar (not including extension).
+#     Defaults to the input .jar file name.
+#
+#   proguard_configs: List of proguard configs to use in final apk step for
+#     any apk that depends on this library.
+#
+#   supports_android: If true, Android targets (android_library, android_apk)
+#     may depend on this target. Note: if true, this target must only use the
+#     subset of Java available on Android.
+#   bypass_platform_checks: Disables checks about cross-platform (Java/Android)
+#     dependencies for this target. This will allow depending on an
+#     android_library target, for example.
+#   enable_desugar: If false, disables desugaring of lambdas, etc. Use this
+#     only when you are sure the library does not require desugaring. E.g.
+#     to hide warnings shown from desugaring.
+#
+#   additional_jar_files: Use to package additional files (Java resources)
+#     into the output jar. Pass a list of length-2 lists with format:
+#         [ [ path_to_file, path_to_put_in_jar ] ]
+#
+#   javac_args: Additional arguments to pass to javac.
+#   errorprone_args: Additional arguments to pass to errorprone.
+#
+#   data_deps, testonly
+#
+# Example
+#   java_library("foo_java") {
+#     sources = [
+#       "org/chromium/foo/Foo.java",
+#       "org/chromium/foo/FooInterface.java",
+#       "org/chromium/foo/FooService.java",
+#     ]
+#     deps = [
+#       ":bar_java"
+#     ]
+#     srcjar_deps = [
+#       ":foo_generated_enum"
+#     ]
+#     jar_excluded_patterns = [
+#       "*/FooService.class", "org/chromium/FooService\$*.class"
+#     ]
+#   }
+template("java_library") {
+  java_library_impl(target_name) {
+    forward_variables_from(invoker, "*", TESTONLY_AND_VISIBILITY)
+    forward_variables_from(invoker, TESTONLY_AND_VISIBILITY)
+    type = "java_library"
+  }
 }

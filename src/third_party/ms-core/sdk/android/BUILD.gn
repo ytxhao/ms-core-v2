@@ -24,7 +24,7 @@ if (is_android) {
     output = "${root_out_dir}/lib.java${_target_dir_name}/${target_name}.jar"
     direct_deps_only = true
     use_unprocessed_jars = true
-    requires_android = true
+    # requires_android = true
     no_build_hooks = true
 
     deps = [
@@ -32,7 +32,7 @@ if (is_android) {
     ]
   }
 
-  rtc_android_library("ms_java") {
+  java_library("ms_java") {
     sources = [
       "api/media/ushow/ms/Constants.java",
     ]

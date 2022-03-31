@@ -9,7 +9,7 @@ import("//build/config/android/config.gni")
 import("//build/config/compiler/compiler.gni")
 # import("//build/config/compute_inputs_for_analyze.gni")
 # import("//build/config/coverage/coverage.gni")
-# import("//build/config/python.gni")
+import("//build/config/python.gni")
 # import("//build/config/sanitizers/sanitizers.gni")
 # import("//build/toolchain/goma.gni")
 # import("//build/toolchain/kythe.gni")
@@ -19,7 +19,7 @@ if (current_toolchain == default_toolchain) {
   import("//build/toolchain/concurrent_links.gni")
 }
 assert(is_android)
-
+enable_java_templates = true
 # The following _java_*_types variables capture all the existing target types.
 # If a new type is introduced, please add it to one of these categories,
 # preferring the more specific resource/library types.
@@ -87,7 +87,6 @@ _desugar_jdk_libs_jar = "//third_party/android_deps/libs/com_android_tools_desug
 _desugar_jdk_libs_configuration_jar = "//third_party/android_deps/libs/com_android_tools_desugar_jdk_libs_configuration/desugar_jdk_libs_configuration-1.1.1.jar"
 _desugar_runtime_jar = "$root_build_dir/obj/third_party/bazel/desugar/Desugar_runtime.processed.jar"
 
-_dexdump_path = "$android_sdk_build_tools/dexdump"
 _dexlayout_path = "//third_party/android_build_tools/art/dexlayout"
 _profman_path = "//third_party/android_build_tools/art/profman"
 _art_lib_file_names = [
@@ -194,7 +193,8 @@ template("write_build_config") {
     depfile = "$target_gen_dir/$target_name.d"
     inputs = []
     outputs = [ invoker.build_config ]
-
+    print("========depfile:$depfile")
+    print("========outputs:$outputs")
     _deps_configs = []
     _public_deps_configs = []
     if (defined(invoker.possible_config_deps)) {
@@ -859,16 +859,6 @@ template("test_runner_script") {
           !_incremental_apk) {
         executable_args += [ "--enable-java-deobfuscation" ]
       }
-      if (use_jacoco_coverage) {
-        # Set a default coverage output directory (can be overridden by user
-        # passing the same flag).
-        _rebased_coverage_dir =
-            rebase_path("$root_out_dir/coverage", root_build_dir)
-        executable_args += [
-          "--coverage-dir",
-          "@WrappedPath(${_rebased_coverage_dir})",
-        ]
-      }
     } else if (_test_type == "junit") {
       assert(defined(invoker.test_suite))
       _device_test = false
@@ -891,16 +881,7 @@ template("test_runner_script") {
         "--robolectric-runtime-deps-dir",
         "@WrappedPath(${_rebased_robolectric_runtime_deps_dir})",
       ]
-      if (use_jacoco_coverage) {
-        # Set a default coverage output directory (can be overridden by user
-        # passing the same flag).
-        _rebased_coverage_dir =
-            rebase_path("$root_out_dir/coverage", root_build_dir)
-        executable_args += [
-          "--coverage-dir",
-          "@WrappedPath(${_rebased_coverage_dir})",
-        ]
-      }
+      
     } else if (_test_type == "linker") {
       executable_args += [
         "--test-apk",
@@ -1389,14 +1370,7 @@ if (enable_java_templates) {
         "--classpath=@FileArg($_rebased_build_config:deps_info:host_classpath)",
       ]
 
-      if (use_jacoco_coverage) {
-        args += [
-          "--classpath",
-          rebase_path("//third_party/jacoco/lib/jacocoagent.jar",
-                      root_build_dir),
-        ]
-      }
-      if (use_jacoco_coverage || !treat_warnings_as_errors) {
+      if (!treat_warnings_as_errors) {
         args += [ "--noverify" ]
       }
       if (defined(invoker.tiered_stop_at_level_one) &&
@@ -1651,13 +1625,10 @@ if (enable_java_templates) {
             rebase_path(_dexlayout_path, root_build_dir),
             "--profman-path",
             rebase_path(_profman_path, root_build_dir),
-            "--dexdump-path",
-            rebase_path(_dexdump_path, root_build_dir),
           ]
           inputs += [
             _dexlayout_path,
             _profman_path,
-            _dexdump_path,
             invoker.dexlayout_profile,
           ]
           inputs += _default_art_libs
@@ -2010,8 +1981,7 @@ if (enable_java_templates) {
       ]
       outputs = [ "$target_out_dir/$target_name.bytecode.stamp" ]
       deps =
-          invoker.deps +
-          [ "//build/android/bytecode:bytecode_processor($default_toolchain)" ]
+          invoker.deps
       _rebased_build_config = rebase_path(invoker.build_config, root_build_dir)
       args = [
         "--target-name",
@@ -3125,18 +3095,9 @@ if (enable_java_templates) {
       if (invoker.supports_android || invoker.use_turbine) {
         args += [ "--java-version=1.8" ]
       }
-      if (use_java_goma) {
-        args += [ "--gomacc-path=$goma_dir/gomacc" ]
-
-        # Override the default action_pool when goma is enabled.
-        pool = "//build/config/android:goma_javac_pool"
-      }
 
       # Flag enable_kythe_annotations requires
       # checkout_android_prebuilts_build_tools=True in .gclient.
-      if (enable_kythe_annotations && !invoker.enable_errorprone) {
-        args += [ "--enable-kythe-annotations" ]
-      }
       if (invoker.requires_android) {
         args += [ "--bootclasspath=@FileArg($_rebased_build_config:android:sdk_interface_jars)" ]
       }
@@ -3554,8 +3515,7 @@ if (enable_java_templates) {
       }
 
       _extra_java_deps = []
-      _jacoco_instrument =
-          use_jacoco_coverage && _chromium_code && _java_files != [] &&
+      _jacoco_instrument = _chromium_code && _java_files != [] &&
           _build_device_jar && (!defined(invoker.testonly) || !invoker.testonly)
       if (defined(invoker.jacoco_never_instrument)) {
         _jacoco_instrument =
@@ -3963,24 +3923,6 @@ if (enable_java_templates) {
       }
       if (_build_device_jar) {
         _public_deps += [ ":${_process_prebuilt_target_name}_device" ]
-      }
-
-      _enable_bytecode_checks = !defined(invoker.enable_bytecode_checks) ||
-                                invoker.enable_bytecode_checks
-      if (_enable_bytecode_checks) {
-        _bytecode_checks_target = "${target_name}__validate_classpath"
-        bytecode_processor(_bytecode_checks_target) {
-          forward_variables_from(invoker, [ "missing_classes_allowlist" ])
-          deps = _unprocessed_jar_deps + _full_classpath_deps +
-                 [ ":$_build_config_target_name" ]
-          requires_android = _requires_android
-          target_label =
-              get_label_info(":${invoker.target_name}", "label_no_toolchain")
-          input_jar = _unprocessed_jar_path
-          build_config = _build_config
-          is_prebuilt = _is_prebuilt
-        }
-        _analysis_public_deps += [ ":$_bytecode_checks_target" ]
       }
     }
 

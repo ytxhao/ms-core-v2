@@ -1423,8 +1423,8 @@ def main(argv):
         raise Exception('Not all deps support the Android platform: '
             + str(deps_not_support_android))
 
-  if is_apk_or_module_target or options.type == 'dist_jar':
-    all_dex_files = [c['dex_path'] for c in all_library_deps]
+  # if is_apk_or_module_target or options.type == 'dist_jar':
+  #   all_dex_files = [c['dex_path'] for c in all_library_deps]
 
   if is_java_target:
     # Classpath values filled in below (after applying tested_apk_config).
@@ -1921,13 +1921,13 @@ def main(argv):
         set(extra_proguard_classpath_jars))
 
   # Dependencies for the final dex file of an apk.
-  if (is_apk_or_module_target or options.final_dex_path
-      or options.type == 'dist_jar'):
-    config['final_dex'] = {}
-    dex_config = config['final_dex']
-    dex_config['path'] = options.final_dex_path
-  if is_apk_or_module_target or options.type == 'dist_jar':
-    dex_config['all_dex_files'] = all_dex_files
+  # if (is_apk_or_module_target or options.final_dex_path
+  #     or options.type == 'dist_jar'):
+  #   config['final_dex'] = {}
+  #   dex_config = config['final_dex']
+  #   dex_config['path'] = options.final_dex_path
+  # if is_apk_or_module_target or options.type == 'dist_jar':
+  #   dex_config['all_dex_files'] = all_dex_files
 
   if is_java_target:
     config['javac']['classpath'] = sorted(javac_classpath)
