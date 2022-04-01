@@ -37,12 +37,26 @@ if (is_android) {
   #     "api/media/ushow/ms/Constants.java",
   #   ]
   # }
+  #   shared_library("libms-core") {
+  #   visibility = [ "*" ]
+  #   sources = [ "src/test.cc" ]
+  #   ldflags = [
+  #     "-Wl,--build-id",
+  #   ]
+  #   deps = [
+  #     ":libms-core_static",
+  #   ]
+  #   output_extension = "so"
+  # }
 
   shared_library("libms-core") {
     visibility = [ "*" ]
     sources = [ "src/test.cc" ]
     ldflags = [
       "-Wl,--build-id",
+    ]
+    deps = [
+      "//third_party/spdlog:spdlog",
     ]
     output_extension = "so"
   }

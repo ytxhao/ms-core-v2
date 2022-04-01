@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# -*- coding:utf-8 -*-
 # Copyright (c) 2017 The WebRTC project authors. All Rights Reserved.
 #
 # Use of this source code is governed by a BSD-style license
@@ -35,6 +35,7 @@ import zipfile
 SCRIPT_DIR = os.path.dirname(os.path.realpath(sys.argv[0]))
 SRC_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, os.pardir, os.pardir))
 CORE_DIR = os.path.normpath(os.path.join(SRC_DIR, 'third_party', 'ms-core'))
+MSL_APPLICATION_DIR =  os.path.normpath(os.path.join(CORE_DIR, 'sdk','android','MSLApplication'))
 DEPOT_TOOLS_PATH = os.path.normpath(os.path.join(SRC_DIR, 'third_party', 'depot_tools'))
 DEFAULT_ARCHS = ['armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64']
 NEEDED_SO_FILES = ['libms-core.so']
@@ -51,6 +52,7 @@ print("--------- SCRIPT_DIR:"+SCRIPT_DIR)
 print("--------- SRC_DIR:"+SRC_DIR)
 print("--------- CORE_DIR:"+CORE_DIR)
 sys.path.append(os.path.join(SRC_DIR, 'build'))
+# import 
 
 
 def _ParseArgs():
@@ -176,6 +178,7 @@ def Build(build_dir, arch, extra_gn_args, extra_gn_switches,
     logging.info('Building: %s', arch)
     output_directory = _GetOutputDirectory(build_dir, arch)
     logging.info('Building output_directory: %s', output_directory)
+    logging.info('Building extra_gn_args: %s', extra_gn_args)
     gn_args = {
         'target_os': 'android',
         'is_debug': False,
@@ -245,6 +248,16 @@ def BuildAar(archs,
     for arch in archs:
         Build(build_dir, arch, extra_gn_args, extra_gn_switches,
               extra_ninja_switches)
+        output_directory = _GetOutputDirectory(build_dir, arch)
+        
+        logging.info('BuildAar  yuhaoo output_directory:%s', output_directory)
+        # sdk/android/MSLApplication/msl-core/src/main/libs
+        for so_file in NEEDED_SO_FILES:
+            output_file = os.path.normpath(os.path.join(output_directory, so_file))
+            logging.info('BuildAar  yuhaoo output_file:%s', output_file)
+            dist_dir = os.path.normpath(os.path.join(MSL_APPLICATION_DIR,'msl-core','src','main','libs',arch))
+            logging.info('BuildAar  yuhaoo dist_dir:%s', dist_dir)
+            shutil.copy(output_file, dist_dir)
 
     # with zipfile.ZipFile(output_file, 'w') as aar_file:
     #     # Architecture doesn't matter here, arbitrarily using the first one.
@@ -252,6 +265,39 @@ def BuildAar(archs,
     #     for arch in archs:
     #         Collect(aar_file, build_dir, arch)
 
+    #
+    print("===========build so finish")
+    # 拷贝so到Android工程，目录为 third_party/ms-core/sdk/android/MSLApplication/msl-core/src/main/libs
+
+
+    # 通过gradl编译msl工程生成aar
+    # ' '.join(
+    #     [k + '=' + _EncodeForGN(v)
+    #      for k, v in extra_gn_args.items()])
+    for i in extra_gn_args:
+        print("index:%s value:%s" % (extra_gn_args.index(i), _EncodeForGN(i)))
+    args_dic = {}
+    for i, val in enumerate(extra_gn_args):
+        print('=====:%d %s' % (i, val))
+        arg_list = val.split('=')
+        for j, item in enumerate(arg_list):
+            if j % 2 == 0:
+                args_dic[item] = arg_list[j + 1]
+        # print(val.split('='))
+    print(args_dic)
+    gradle_arg=''
+    if bool(args_dic['is_debug']):
+        gradle_arg=':msl-core:assembleDebug'
+    else:
+        gradle_arg=':msl-core:assembleRelease'
+
+    os.chdir(MSL_APPLICATION_DIR)
+    cmd = "{0} {1}".format(
+            './gradlew',
+            gradle_arg)
+    logging.info('cmd:%s', cmd)
+    subprocess.call(cmd, shell=True)
+    os.chdir(SRC_DIR)
     if not ext_build_dir:
         shutil.rmtree(build_dir, True)
 

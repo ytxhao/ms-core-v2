@@ -327,7 +327,7 @@ default_compiler_configs = [
   "//build/config/compiler:default_stack_frames",
   "//build/config/compiler:default_symbols",
   "//build/config/compiler:export_dynamic",
-  "//build/config/compiler:no_exceptions",
+  # "//build/config/compiler:no_exceptions",
   "//build/config/compiler:no_rtti",
   "//build/config/compiler:runtime_library",
   "//build/config/compiler:thin_archive",
@@ -371,6 +371,7 @@ if (is_win) {
 #   ]
 # }
 
+print("============is_debug:$is_debug")
 # Debug/release-related defines.
 if (is_debug) {
   default_compiler_configs += [ "//build/config:debug" ]

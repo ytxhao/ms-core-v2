@@ -1,0 +1,32 @@
+# 1.9.2
+
+config("external_config") {
+  include_dirs = [ "include" ]
+  cflags = [
+    "-Wno-exit-time-destructors",
+    "-Wno-global-constructors",
+  ]
+  defines = [
+    "SPDLOG_COMPILED_LIB",
+  ]
+}
+
+static_library("spdlog") {
+  visibility = [ "*" ]
+
+  include_dirs = [ 
+    "include"]
+
+  public_configs = [ ":external_config" ]
+
+  sources = [
+    "src/spdlog.cpp",
+    "src/stdout_sinks.cpp",
+    "src/color_sinks.cpp",
+    "src/file_sinks.cpp",
+    "src/async.cpp",
+    "src/cfg.cpp",
+    "src/fmt.cpp",
+  ]
+}
+
