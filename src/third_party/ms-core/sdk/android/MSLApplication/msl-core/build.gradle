@@ -74,9 +74,6 @@ android {
             version '3.18.1'
         }
     }
-    buildFeatures {
-        viewBinding true
-    }
 
     packagingOptions {
         // 如果不设置 doNotStrip，编译出来的安装包还是会丢失调试信息；

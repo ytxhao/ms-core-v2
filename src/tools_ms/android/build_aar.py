@@ -30,6 +30,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import re
 import zipfile
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -121,8 +122,9 @@ def _RunGN(args):
 
 def _RunNinja(output_directory, args):
     cmd = [
-        os.path.join(DEPOT_TOOLS_PATH, 'ninja'), '-C',
+        os.path.join(DEPOT_TOOLS_PATH, 'ninja'),'-v', '-C',
         output_directory
+        # '-t', 'query', 'all'
     ]
     logging.info('_RunNinja  yuhaoo args:%s', args)
     logging.info('_RunNinja  yuhaoo cmd:%s', cmd)
@@ -255,10 +257,24 @@ def BuildAar(archs,
         for so_file in NEEDED_SO_FILES:
             output_file = os.path.normpath(os.path.join(output_directory, so_file))
             logging.info('BuildAar  yuhaoo output_file:%s', output_file)
-            dist_dir = os.path.normpath(os.path.join(MSL_APPLICATION_DIR,'msl-core','src','main','libs',arch))
-            logging.info('BuildAar  yuhaoo dist_dir:%s', dist_dir)
-            shutil.copy(output_file, dist_dir)
-
+            dist_lib_dir = os.path.normpath(os.path.join(MSL_APPLICATION_DIR,'msl-core','src','main','libs',arch))
+            logging.info('BuildAar  yuhaoo dist_dir:%s', dist_lib_dir)
+            shutil.copy(output_file, dist_lib_dir)
+        dist_include_dir = os.path.normpath(os.path.join(MSL_APPLICATION_DIR,'msl-core','src','main','cpp','msl','include'))
+        src_include_dir = os.path.normpath(os.path.join(CORE_DIR,'sdk','src'))
+        print("========src_include_dir:"+src_include_dir)
+        for root, dirs, files in os.walk(src_include_dir):
+            for file_path in files:
+                file_name = os.path.join(root, file_path)
+                # file_name = file_path
+                print("========1file_name:"+file_name)
+                str=r'.*\.h'
+                match_obj = re.match(str,file_name)
+                if match_obj:
+                     print("========2file_name:"+file_name)
+                     shutil.copy(file_name, dist_include_dir)
+                
+        # shutil.copy(output_file, dist_include_dir)
     # with zipfile.ZipFile(output_file, 'w') as aar_file:
     #     # Architecture doesn't matter here, arbitrarily using the first one.
     #     CollectCommon(aar_file, build_dir, archs[0])
