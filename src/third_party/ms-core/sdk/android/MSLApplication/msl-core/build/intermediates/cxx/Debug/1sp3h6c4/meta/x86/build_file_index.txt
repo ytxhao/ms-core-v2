@@ -1,1 +1,0 @@
-/Volumes/kingston/shared_vagrant_v2/ms-core-v2/src/third_party/ms-core/sdk/android/MSLApplication/msl-core/src/main/cpp/CMakeLists.txt

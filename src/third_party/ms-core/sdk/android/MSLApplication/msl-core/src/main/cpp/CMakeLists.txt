@@ -14,6 +14,14 @@ project("msl-core-jni")
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
+set(PATH_TO_MEDIA_STREAM
+        CACHE STRING ""
+        )
+
+set(PATH_TO_LIBS "${PATH_TO_MEDIA_STREAM}/../libs")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -g -Wall -Wno-unused-variable -pthread")
+
 add_library( # Sets the name of the library.
         msl-core-jni
 
@@ -45,4 +53,5 @@ target_link_libraries( # Specifies the target library.
 
         # Links the target library to the log library
         # included in the NDK.
-        ${log-lib})
+        ${log-lib}
+        ${PATH_TO_LIBS}/${ANDROID_ABI}/libms-core.so)

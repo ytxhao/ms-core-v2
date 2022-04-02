@@ -2,6 +2,18 @@ plugins {
     id 'com.android.library'
 }
 
+ext {
+    boolean isWindow = isWindowsOS();
+    if (isWindow) {
+        native_media_stream_path = rootDir.getAbsolutePath().replace('\\', '/') + "/msl-core/src/main/cpp"
+    } else {
+        native_media_stream_path = file(rootDir.getAbsolutePath() + "/msl-core/src/main/cpp")
+    }
+    println "native_media_stream_path=$native_media_stream_path"
+    mslAbiFilters = project.hasProperty('mslAbiFilters') ? mslAbiFilters : "arm64-v8a,armeabi-v7a"
+    println "gradle mslAbiFilters=" + mslAbiFilters
+}
+
 android {
     compileSdk 32
 //    ndkVersion rootProject.ext.ndkVersion
@@ -13,6 +25,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters = []
+            abiFilters.addAll("${mslAbiFilters}".split(",").collect{it as String})
+        }
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -20,10 +36,31 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/libs']
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable true
+            externalNativeBuild {
+                cmake {
+                    arguments '-DANDROID_STL=c++_static',
+                            "-DPATH_TO_MEDIA_STREAM:STRING=${native_media_stream_path}"
+                }
+            }
+        }
+
+        debug {
+            debuggable true
+            externalNativeBuild {
+                cmake {
+                    arguments '-DANDROID_STL=c++_static',
+                            "-DPATH_TO_MEDIA_STREAM:STRING=${native_media_stream_path}"
+                }
+            }
         }
     }
     compileOptions {
@@ -40,6 +77,12 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    packagingOptions {
+        // 如果不设置 doNotStrip，编译出来的安装包还是会丢失调试信息；
+        doNotStrip "*/arm64-v8a/*.so"
+        doNotStrip "*/armeabi-v7a/*.so"
+    }
 }
 
 dependencies {
@@ -50,4 +93,19 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
+
+
+/** 判断是否为Windows操作系统 */
+boolean isWindowsOS() {
+    boolean isWindowsOS = false;
+    String osName = System.getProperty("os.name");
+    println("os.name=" + osName);
+    if (osName == null || "" == osName) {
+        return false
+    }
+    if (osName.toLowerCase().indexOf("windows") > -1) {
+        isWindowsOS = true
+    }
+    return isWindowsOS;
 }

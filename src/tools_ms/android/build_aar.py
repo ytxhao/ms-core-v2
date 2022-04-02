@@ -292,9 +292,10 @@ def BuildAar(archs,
         gradle_arg=':msl-core:assembleRelease'
 
     os.chdir(MSL_APPLICATION_DIR)
-    cmd = "{0} {1}".format(
+    cmd = "{0} {1} -PmslAbiFilters={2}".format(
             './gradlew',
-            gradle_arg)
+            gradle_arg,
+            ','.join(archs))
     logging.info('cmd:%s', cmd)
     subprocess.call(cmd, shell=True)
     os.chdir(SRC_DIR)
