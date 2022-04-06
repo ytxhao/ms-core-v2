@@ -23,6 +23,9 @@ if (is_android || is_chromeos) {
     # The default to use for android:minSdkVersion for targets that do
     # not explicitly set it.
     default_min_sdk_version = 21
+    default_android_ndk_root = ""
+    default_android_ndk_version = "r22"
+    default_android_ndk_major_version = 22
   }
 
   declare_args() {
@@ -42,7 +45,8 @@ if (is_android || is_chromeos) {
     # Which Android SDK to use.
     android_sdk_release = default_android_sdk_release
   }
-  
+  # default_android_ndk_root=""
+  print("==============1234 default_android_ndk_root:$default_android_ndk_root")
   if (!defined(default_android_ndk_root)) {
     if (host_os == "linux") {
       default_android_ndk_root = "//third_party/android_ndk/android-ndk-r22b-linux"

@@ -8,7 +8,7 @@ extern "C" {
 
 JNIEXPORT void JNICALL
 Java_com_msl_app_MSLLog_nativeTracker(JNIEnv* env, jclass clazz, jstring tag, jstring log) {
-    std::string hello = "Hello from C++";
+    std::string hello = "Hello from C++qfdsafw";
     int a = test(2,5);
     LOGD("yjy","a:%d",a);
     env->NewStringUTF(hello.c_str());

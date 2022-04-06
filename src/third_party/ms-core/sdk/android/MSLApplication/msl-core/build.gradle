@@ -11,13 +11,15 @@ ext {
     }
     println "native_media_stream_path=$native_media_stream_path"
     mslAbiFilters = project.hasProperty('mslAbiFilters') ? mslAbiFilters : "arm64-v8a,armeabi-v7a"
+    mslNdkPath = project.hasProperty('mslNdkPath') ? mslNdkPath : ""
     println "gradle mslAbiFilters=" + mslAbiFilters
+    println "gradle mslNdkPath=" + mslNdkPath
 }
 
 android {
     compileSdk 32
 //    ndkVersion rootProject.ext.ndkVersion
-    ndkPath "/Volumes/kingston/workspace/Library/Android/sdk/ndk/21.3.6528147"
+    ndkPath mslNdkPath
     defaultConfig {
         minSdk 21
         targetSdk 32
