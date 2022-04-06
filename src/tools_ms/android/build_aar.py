@@ -41,6 +41,7 @@ CORE_DIR = os.path.normpath(os.path.join(SRC_DIR, 'third_party', 'ms-core'))
 MSL_APPLICATION_DIR =  os.path.normpath(os.path.join(CORE_DIR, 'sdk','android','MSLApplication'))
 DEPOT_TOOLS_PATH = os.path.normpath(os.path.join(SRC_DIR, 'third_party', 'depot_tools'))
 ANDROID_NDK_ROOT_DIR = ""
+ANDROID_SDK_ROOT_DIR = ""
 DEFAULT_ARCHS = ['armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64']
 NEEDED_SO_FILES = ['libms-core.so']
 JAR_FILE = 'lib.java/third_party/core/sdk/android/libms-framework.jar'
@@ -214,6 +215,8 @@ def Build(build_dir, arch, extra_gn_args, extra_gn_switches,
     print("=======android_sdk_root:"+android_sdk_root)
     global ANDROID_NDK_ROOT_DIR
     ANDROID_NDK_ROOT_DIR = android_ndk_root
+    global ANDROID_SDK_ROOT_DIR
+    ANDROID_SDK_ROOT_DIR = android_sdk_root
     android_config_dict={}
     android_config_dict["default_android_ndk_root"]=android_ndk_root
     android_config_dict["default_android_ndk_version"]=android_ndk_version
@@ -335,12 +338,14 @@ def BuildAar(archs,
         gradle_arg=':msl-core:assembleRelease'
 
     os.chdir(MSL_APPLICATION_DIR)
-    cmd = "{0} {1} -PmslAbiFilters={2} -PmslNdkPath={3}".format(
+    cmd = "export ANDROID_SDK_ROOT={0};{1} {2} -PmslAbiFilters={3} -PmslNdkPath={4}".format(
+            ANDROID_SDK_ROOT_DIR,
             './gradlew',
             gradle_arg,
             ','.join(archs),
             ANDROID_NDK_ROOT_DIR)
     logging.info('cmd:%s', cmd)
+    # subprocess.call('export ANDROID_SDK_ROOT=/Volumes/kingston/workspace/Library/Android/sdk', shell=True)
     subprocess.call(cmd, shell=True)
     os.chdir(SRC_DIR)
     if not ext_build_dir:
