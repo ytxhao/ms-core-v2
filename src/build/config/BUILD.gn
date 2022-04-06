@@ -191,6 +191,8 @@ config("default_libs") {
     libs = [
       "dl",
       "m",
+      # "c++_static",
+      # "c++abi",
     ]
   } else if (is_mac) {
     # Targets should choose to explicitly link frameworks they require. Since

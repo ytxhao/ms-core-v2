@@ -54,6 +54,7 @@ if (is_android) {
     sources = [ "src/test.cc" ]
     ldflags = [
       "-Wl,--build-id",
+      "-static-libstdc++"
     ]
     deps = [
       "//third_party/spdlog:spdlog",
