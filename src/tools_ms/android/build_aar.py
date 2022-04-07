@@ -348,6 +348,14 @@ def BuildAar(archs,
     # subprocess.call('export ANDROID_SDK_ROOT=/Volumes/kingston/workspace/Library/Android/sdk', shell=True)
     subprocess.call(cmd, shell=True)
     os.chdir(SRC_DIR)
+    # 拷贝aar到相应的目录
+    if bool(args_dic['is_debug']):
+        aar_file_name = "msl-core-debug.aar"
+    else:
+        aar_file_name = "msl-core-release.aar"
+    src_aar_file = os.path.normpath(os.path.join(MSL_APPLICATION_DIR,'msl-core','build','outputs','aar', aar_file_name))
+    dist_aar_file = os.path.normpath(os.path.join(build_dir,'msl-core.aar'))
+    shutil.copyfile(src_aar_file, dist_aar_file)    #复制并重命名文件
     if not ext_build_dir:
         shutil.rmtree(build_dir, True)
 
