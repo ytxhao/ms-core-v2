@@ -339,6 +339,14 @@ def BuildAar(archs,
 
     os.chdir(MSL_APPLICATION_DIR)
     cmd = "export ANDROID_SDK_ROOT={0};{1} {2} -PmslAbiFilters={3} -PmslNdkPath={4}".format(
+        ANDROID_SDK_ROOT_DIR,
+        './gradlew',
+        'clean',
+        ','.join(archs),
+        ANDROID_NDK_ROOT_DIR)
+    subprocess.call(cmd, shell=True)
+
+    cmd = "export ANDROID_SDK_ROOT={0};{1} {2} -PmslAbiFilters={3} -PmslNdkPath={4}".format(
             ANDROID_SDK_ROOT_DIR,
             './gradlew',
             gradle_arg,
