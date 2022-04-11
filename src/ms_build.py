@@ -156,6 +156,17 @@ def main():
                 if os.path.isdir(path):
                     chmod(path)
 
+    if args.os == "i":
+        architectures = ' '.join(list(args.arch))
+        cmd = "{0} --build_config {1} --output-dir {2} --extra-gn-args {3} --arch {4}".format(
+            IOS_SDK_BUILD_SCRIPT,
+            build_config,
+            build_dir,
+            build_args,
+            architectures)
+        print("=============ios cmd:"+cmd)
+        subprocess.call(cmd, shell=True)
+
 
 if __name__ == '__main__':
     sys.exit(main())

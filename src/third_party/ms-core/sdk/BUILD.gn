@@ -5,10 +5,10 @@
 # tree. An additional intellectual property rights grant can be found
 # in the file PATENTS.  All contributing project authors may
 # be found in the AUTHORS file in the root of the source tree.
+import("../ms-core.gni")
 if (is_android) {
   import("//build/config/android/config.gni")
   import("//build/config/android/rules.gni")
-  import("../ms-core.gni")
 
   group("android") {
     if (is_android) {
@@ -51,14 +51,33 @@ if (is_android) {
 
   shared_library("libms-core") {
     visibility = [ "*" ]
-    sources = [ "src/test.cc" ]
+    # sources = [ "src/test.cc" ]
     ldflags = [
       "-Wl,--build-id",
       "-static-libstdc++"
     ]
     deps = [
       "//third_party/spdlog:spdlog",
+      "./src:libmsl_static"
     ]
     output_extension = "so"
   }
 }
+
+if (is_ios) {
+  import("//build/config/ios/ios_sdk.gni")
+  import("//build/config/ios/rules.gni")
+}
+
+# group("sdk") {
+#   public_deps = []
+#   if (is_ios) {
+#     public_deps += [ ":framework_objc" ]
+
+#     frameworks = [
+#       "AVFoundation.framework",
+#       "CoreMedia.framework",
+#       "AudioToolbox.framework",
+#     ]
+#   }
+# }

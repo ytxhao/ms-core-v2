@@ -1,0 +1,20 @@
+# Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS.  All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+
+# Use bundled hermetic Xcode installation maintainted by Chromium,
+# except for local iOS builds where it's unsupported.
+if (host_os == "mac") {
+  _result = exec_script("//build/mac/should_use_hermetic_xcode.py",
+                        [ target_os ],
+                        "value")
+  assert(_result != 2,
+         "Do not allow building targets with the default " +
+             "hermetic toolchain if the minimum OS version is not met.")
+  use_system_xcode = _result == 0
+}

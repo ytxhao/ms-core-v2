@@ -183,7 +183,7 @@ declare_args() {
   # dependency on the Win 10 SDK v10.0.17763.0.
   rtc_enable_win_wgc = is_win
 }
-print("===========default_android_ndk_root:$default_android_ndk_root")
+# print("===========default_android_ndk_root:$default_android_ndk_root")
 # if (!build_with_mozilla) {
 #   import("//testing/test.gni")
 # }
@@ -623,8 +623,8 @@ template("rtc_static_library") {
     configs -= invoker.suppressed_configs
     public_configs = [
       rtc_common_inherited_config,
-      absl_include_config,
-      absl_define_config,
+      # absl_include_config,
+      # absl_define_config,
     ]
     if (defined(testonly) && testonly) {
       public_configs += [ absl_flags_config ]

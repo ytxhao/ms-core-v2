@@ -1,0 +1,98 @@
+# Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS.  All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+import("../../ms-core.gni")
+rtc_static_library("libmsl_static") {
+  visibility = [ "*" ]
+  allow_poison = [ "audio_codecs", "default_task_queue" ]
+
+  include_dirs = [
+    "../sdk/objc/api",
+    "../sdk/objc/base",
+    "../sdk/objc",
+  ]
+
+  cflags = [
+    "-Wstrict-overflow",
+    "-Wmissing-field-initializers",
+  ]
+
+  # configs += [
+  #   "..:no_exit_time_destructors",
+  # ]
+
+  sources = [
+    "test.cc",
+  ]
+
+  # if (is_ios) {
+  #   sources += [
+  #     "auto_gen_media_engine.mm", # auto_gen_media_engine.mm is a copy of media_engine.cc
+  #     "video_track_renderer.mm",
+  #     "iosutils.mm",
+  #     "camera_video_capturer.mm",
+  #   ]
+  # }
+
+  # if (is_android) {
+  #   sources += [
+  #     "media_engine.cc",
+  #     # "zorro_audio_processing.cc", # TODOO
+  #     "video_track_renderer.cc",
+  #     "zorro_rtc_engine_native_interface.cc",
+  #     "camera_video_capturer.cc",
+  #   ]
+  # }
+
+  # if (is_linux) {
+  #   sources += [
+  #     "media_engine.cc",
+  #     "video_track_renderer.cc",
+  #     "zorro_rtc_engine_native_interface.cc",
+  #   ]
+  # }
+
+  deps = [
+    "//third_party/spdlog:spdlog",
+  ]
+
+  # if (is_android) {
+  #   deps += [
+  #     # "xaudio",
+  #     "../api/video_codecs:android_video_encoder_factory",
+  #     "../api/video_codecs:android_video_decoder_factory",
+  #   ]
+  # }
+
+  # if (is_ios) {
+  #   deps += [
+  #     "network",
+  #     "../sdk:videorendereradapter_objc",
+  #     "../sdk:helpers_objc",
+  #     "../sdk:videotoolbox_objc",
+  #     "../sdk:ui_objc",
+  #   ]
+  #   if (rtc_use_metal_rendering) {
+  #     deps += [ "../sdk:metal_objc" ]
+  #   }
+  # }
+}
+
+# if (is_linux) {
+#   rtc_executable("linux_sdk_test") {
+#     sources = [
+#       "test/linux_sdk_test.cc",
+#     ]
+#     deps = [
+#       ":libzorro_static",
+#       "//third_party/ffmpeg",
+#     ]
+#     include_dirs = [
+#       "//third_party/webrtc/zorro",
+#     ]
+#   }
+# }
