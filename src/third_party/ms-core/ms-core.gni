@@ -870,8 +870,9 @@ if (is_ios) {
     umbrella_header_path =
         "$target_gen_dir/$output_name.framework/WebRTC/$output_name.h"
 
+    print("==========this_target_name:$this_target_name")
     action_foreach("create_bracket_include_headers_$target_name") {
-      script = "../tools_webrtc/apple/copy_framework_header.py"
+      script = "//tools_ms/apple/copy_framework_header.py"
       sources = invoker.sources
       output_name = invoker.output_name
       outputs = [
@@ -900,7 +901,7 @@ if (is_ios) {
       public_headers = get_target_outputs(
               ":create_bracket_include_headers_$this_target_name")
 
-      script = "../tools_webrtc/ios/generate_umbrella_header.py"
+      script = "//tools_ms/ios/generate_umbrella_header.py"
 
       outputs = [ umbrella_header_path ]
       args = [
@@ -962,7 +963,7 @@ if (is_mac) {
     }
 
     action_foreach("create_bracket_include_headers_$this_target_name") {
-      script = "../tools_webrtc/apple/copy_framework_header.py"
+      script = "../tools_ms/apple/copy_framework_header.py"
       sources = invoker.sources
       output_name = invoker.output_name
       outputs = [
@@ -986,7 +987,7 @@ if (is_mac) {
     }
 
     action("modulemap_$this_target_name") {
-      script = "../tools_webrtc/ios/generate_modulemap.py"
+      script = "../tools_ms/ios/generate_modulemap.py"
       args = [
         "--out",
         rebase_path(modulemap_path, root_build_dir),
@@ -1006,7 +1007,7 @@ if (is_mac) {
       sources = get_target_outputs(
               ":create_bracket_include_headers_$this_target_name")
 
-      script = "../tools_webrtc/ios/generate_umbrella_header.py"
+      script = "../tools_ms/ios/generate_umbrella_header.py"
 
       outputs = [ umbrella_header_path ]
       args = [
