@@ -192,7 +192,7 @@ def main():
         _CleanTemporary(args.output_dir, architectures)
         return 0
 
-    gn_target_name = 'framework_objc'
+    gn_target_name = 'mac_framework_objc'
     if not args.bitcode:
         gn_args.append('enable_dsyms=true')
     gn_args.append('enable_stripping=true')

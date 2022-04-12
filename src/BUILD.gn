@@ -1,10 +1,14 @@
 import("third_party/ms-core/ms-core.gni")
-print("is_ios:$is_ios is_android:$is_android is_linux:$is_linux")
+print("is_ios:$is_ios is_android:$is_android is_linux:$is_linux is_mac:$is_mac")
 group("default") {
   deps = []
   if (is_ios) {
     deps += [
       "//third_party/ms-core/sdk:framework_objc",
+    ]
+  } else if (is_mac) {
+    deps += [
+      "//third_party/ms-core/sdk:mac_framework_objc",
     ]
   } else if (is_android) {
     deps += [

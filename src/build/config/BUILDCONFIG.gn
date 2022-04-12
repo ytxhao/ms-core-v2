@@ -282,7 +282,7 @@ if (custom_toolchain != "") {
 # Do not add more is_* variants here for random lesser-used Unix systems like
 # aix or one of the BSDs. If you need to check these, just check the
 # current_os value directly.
-
+print("=============current_os:$current_os")
 is_android = current_os == "android"
 is_chromeos = current_os == "chromeos"
 is_fuchsia = current_os == "fuchsia"
@@ -291,7 +291,7 @@ is_linux = current_os == "linux"
 is_mac = current_os == "mac"
 is_nacl = current_os == "nacl"
 is_win = current_os == "win" || current_os == "winuwp"
-
+print("=============is_mac:$is_mac")
 is_apple = is_ios || is_mac
 is_posix = !is_win && !is_fuchsia
 

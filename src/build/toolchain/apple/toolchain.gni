@@ -97,12 +97,20 @@ template("apple_toolchain") {
 
     # Supports building with the version of clang shipped with Xcode when
     # targeting iOS by not respecting clang_base_path.
-    # print("===========clang_base_path:$clang_base_path")
+    # print("===========invoker.bin_path:${invoker.bin_path}")
+    # if (target_os == "mac") {
+    #   prefix = "/usr/bin/"
+    # } else {
     if (toolchain_uses_xcode_clang) {
       prefix = invoker.bin_path
     } else {
-      prefix = rebase_path("$clang_base_path/bin/", root_build_dir)
+      if (target_os == "mac") {
+        prefix = "/usr/bin/"
+      } else {
+        prefix = rebase_path("$clang_base_path/bin/", root_build_dir)   
+      }
     }
+    # }
 
     _cc = "${prefix}clang"
     _cxx = "${prefix}clang++"
