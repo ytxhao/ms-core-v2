@@ -237,7 +237,8 @@ if (symbol_level == -1) {
     # Reduce symbol level when it will cause invalid elf files to be created
     # (due to file size). https://crbug.com/648948.
     symbol_level = 1
-  } else if (is_chromeos_device) {
+  # } else if (is_chromeos_device) {
+  } else if (false) {
     # Use lower symbol level in Simple Chrome build for faster link time.
     # For Simple Chrome, this should take precedence over is_official_build,
     # turned on by --internal.

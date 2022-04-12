@@ -19,6 +19,7 @@ ZORRO_DIR = os.path.join(SRC_DIR, 'zorro')
 OUTPUT_DIR = os.path.join(SRC_DIR, 'out')
 ENABLED_ARCHS = ['arm64', 'arm', 'x64']
 DEFAULT_ARCHS = ['arm64', 'arm']
+MAC_SDK_BUILD_SCRIPT = SRC_DIR + "/tools_ms/mac/build_mac_libs.sh"
 IOS_SDK_BUILD_SCRIPT = SRC_DIR + "/tools_ms/ios/build_ios_libs.sh"
 ANDROID_SDK_BUILD_SCRIPT = SRC_DIR + "/tools_ms/android/build_aar.sh"
 LINUX_SDK_BUILD_SCRIPT = SRC_DIR + "/tools_ms/linux/build_linux_libs.sh"
@@ -33,7 +34,7 @@ def parse_args():
     parser.add_argument(
         '-o',
         '--os',
-        choices=['a', 'i', 'l'],
+        choices=['a', 'i', 'l', 'm'],
         help='The os config can be IGNORED, and decided by os info, or can be "a (Android)", '
              '"i (iOS)", "l (linux)". Defaults to "a (Android)".')
     parser.add_argument(
@@ -121,6 +122,10 @@ def main():
         if platform.system() != "Linux":
             print("\033[31mCompiled in a wrong system.\n\033[0m")
             return
+    elif args.os == 'm':
+        if platform.system() != "Darwin":
+            print("\033[31mCompiled in a wrong system.\n\033[0m")
+            return
     logging.info('args.os:%s',args.os)
     build_args = get_build_args(args)
     if args.os == "a":
@@ -166,6 +171,17 @@ def main():
             architectures)
         print("=============ios cmd:"+cmd)
         subprocess.call(cmd, shell=True)
+    
+    if args.os == "m":
+        architectures = ' '.join(list(args.arch))
+        cmd = "{0} --build_config {1} --output-dir {2} --extra-gn-args {3} --arch {4}".format(
+            MAC_SDK_BUILD_SCRIPT,
+            build_config,
+            build_dir,
+            build_args,
+            architectures)
+        print("=============mac cmd:"+cmd)
+        subprocess.call(cmd, shell=True) 
 
 
 if __name__ == '__main__':

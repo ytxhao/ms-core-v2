@@ -7,7 +7,7 @@
 
 # import("//build/config/chrome_build.gni")
 # import("//build/config/chromecast_build.gni")
-# import("//build_overrides/build.gni")
+import("//build_overrides/build.gni")
 
 declare_args() {
   # If this is set to true, we use the revision in the llvm repo to determine

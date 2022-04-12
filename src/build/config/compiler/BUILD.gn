@@ -22,7 +22,7 @@ import("//build/config/compiler/compiler.gni")
 # import("//build/toolchain/rbe.gni")
 import("//build/toolchain/toolchain.gni")
 # import("//build_overrides/build.gni")
-
+print("===============current_cpu:$current_cpu")
 if (current_cpu == "arm" || current_cpu == "arm64") {
   import("//build/config/arm.gni")
 }
