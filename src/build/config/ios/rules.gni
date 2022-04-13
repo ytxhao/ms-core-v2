@@ -111,6 +111,7 @@ template("lipo_binary") {
         "$_dsyms_output_dir/Contents/Resources/DWARF/$_output_name",
       ]
       args += [ "-Wcrl,dsym," + rebase_path("$root_out_dir/.", root_build_dir) ]
+      pirnt("=========use_xcode_clang:$use_xcode_clang")
       if (!use_xcode_clang) {
         args += [ "-Wcrl,dsymutilpath," +
                   rebase_path("//tools/clang/dsymutil/bin/dsymutil",

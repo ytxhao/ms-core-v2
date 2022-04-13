@@ -153,7 +153,8 @@ def RunDsymUtil(dsym_path_prefix, full_args):
   """
   if not len(dsym_path_prefix):
     raise ValueError('Unspecified dSYM output file')
-
+  print("=======dsym_path_prefix:"+dsym_path_prefix)
+  print("=======full_args:"+'  '.join(full_args))
   linker_out = _FindLinkerOutput(full_args)
   base = os.path.basename(linker_out)
   dsym_out = os.path.join(dsym_path_prefix, base + '.dSYM')
@@ -162,10 +163,12 @@ def RunDsymUtil(dsym_path_prefix, full_args):
   _RemovePath(dsym_out)
 
   tools_paths = _FindToolsPaths(full_args)
+  print("=======tools_paths:"+''.join(tools_paths))
   if os.environ.get('PATH'):
     tools_paths.append(os.environ['PATH'])
   dsymutil_env = os.environ.copy()
   dsymutil_env['PATH'] = ':'.join(tools_paths)
+  print("=======DSYMUTIL_INVOKE:"+','.join(DSYMUTIL_INVOKE) + " "+dsym_out + " "+''.join(linker_out))
   subprocess.check_call(DSYMUTIL_INVOKE + ['-o', dsym_out, linker_out],
                         env=dsymutil_env)
   return [dsym_out]

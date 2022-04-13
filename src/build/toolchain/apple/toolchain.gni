@@ -132,6 +132,9 @@ template("apple_toolchain") {
     cxx = compiler_prefix + _cxx
     ld = _cxx
 
+    print("=========cc:$cc")
+    print("=========cxx:$cxx")
+    print("=========ld:$ld")
     # Set the explicit search path for clang++ so it uses the right linker
     # binary.
     if (!use_lld) {
@@ -196,7 +199,7 @@ template("apple_toolchain") {
       dsym_switch += "-Wcrl,dsymutilpath," +
                      rebase_path("//tools/clang/dsymutil/bin/dsymutil",
                                  root_build_dir) + " "
-
+      print("=========dsym_switch:$dsym_switch")
       dsym_output_dir =
           "{{root_out_dir}}/{{target_output_name}}{{output_extension}}.dSYM"
       dsym_output = [
