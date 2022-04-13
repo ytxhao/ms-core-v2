@@ -255,7 +255,7 @@ def main():
         # Modify the version number.
         # Format should be <Branch cut MXX>.<Hotfix #>.<Rev #>.
         # e.g. 55.0.14986 means branch cut 55, no hotfixes, and revision 14986.
-        infoplist_path = os.path.join(args.output_dir, SDK_FRAMEWORK_NAME,
+        infoplist_path = os.path.join(args.output_dir, SDK_FRAMEWORK_NAME, 'Resources',
                                       'Info.plist')
         cmd = [
             'PlistBuddy', '-c', 'Print :CFBundleShortVersionString',
