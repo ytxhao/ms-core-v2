@@ -212,9 +212,10 @@ def main():
     dylib_path = os.path.join(SDK_FRAMEWORK_NAME, 'ZorroRtcEngineKit')
     # Dylibs will be combined, all other files are the same across archs.
     # Use distutils instead of shutil to support merging folders.
+    logging.info("=====lib_paths[0]:" + lib_paths[0] + " args.output_dir:" + args.output_dir)
     distutils.dir_util.copy_tree(
         os.path.join(lib_paths[0], SDK_FRAMEWORK_NAME),
-        os.path.join(args.output_dir, SDK_FRAMEWORK_NAME))
+        os.path.join(args.output_dir, SDK_FRAMEWORK_NAME), preserve_symlinks = True)
     # logging.info('Merging framework slices.')
     dylib_paths = [os.path.join(path, dylib_path) for path in lib_paths]
     out_dylib_path = os.path.join(args.output_dir, dylib_path)
@@ -275,7 +276,7 @@ def main():
     	renamed_out_dsym_dir = os.path.join(args.output_dir, 'ZorroRtcEngineKit.framework.dSYM')
     	if os.path.exists(renamed_out_dsym_dir):
       	    shutil.rmtree(renamed_out_dsym_dir)
-        # logging.info("out_dsym_dir:" + out_dsym_dir + " renamed_out_dsym_dir:" + renamed_out_dsym_dir)
+        logging.info("out_dsym_dir:" + out_dsym_dir + " renamed_out_dsym_dir:" + renamed_out_dsym_dir)
     	os.rename(out_dsym_dir, renamed_out_dsym_dir)
 
     # logging.info('Done.')
