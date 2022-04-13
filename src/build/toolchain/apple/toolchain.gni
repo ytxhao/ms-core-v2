@@ -105,7 +105,7 @@ template("apple_toolchain") {
       prefix = invoker.bin_path
     } else {
       if (target_os == "mac") {
-        prefix = "/usr/bin/"
+        prefix = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/"
       } else {
         prefix = rebase_path("$clang_base_path/bin/", root_build_dir)   
       }

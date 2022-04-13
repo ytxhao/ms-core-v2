@@ -662,6 +662,7 @@ template("rtc_static_library") {
 # For the same reason, testonly targets will always be expanded to
 # source_set in order to be sure that tests are present in the test binary.
 template("rtc_library") {
+  print("===================is_component_build:$is_component_build")
   if (is_component_build || (defined(invoker.testonly) && invoker.testonly)) {
     target_type = "source_set"
   } else {
@@ -730,8 +731,8 @@ template("rtc_library") {
     configs -= invoker.suppressed_configs
     public_configs = [
       rtc_common_inherited_config,
-      absl_include_config,
-      absl_define_config,
+      # absl_include_config,
+      # absl_define_config,
     ]
     if (defined(testonly) && testonly) {
       public_configs += [ absl_flags_config ]
