@@ -209,7 +209,7 @@ def main():
     ]
 
     # Combine the slices.
-    dylib_path = os.path.join(SDK_FRAMEWORK_NAME, 'ZorroRtcEngineKit')
+    dylib_path = os.path.join(SDK_FRAMEWORK_NAME, 'Versions', 'Current',  'ZorroRtcEngineKit')
     # Dylibs will be combined, all other files are the same across archs.
     # Use distutils instead of shutil to support merging folders.
     logging.info("=====lib_paths[0]:" + lib_paths[0] + " args.output_dir:" + args.output_dir)
@@ -227,6 +227,7 @@ def main():
     except OSError:
         pass
     cmd = ['lipo'] + dylib_paths + ['-create', '-output', out_dylib_path]
+    logging.info("=====12 cmd:" + ' '.join(cmd))
     _RunCommand(cmd)
 
     # Merge the dSYM slices.
