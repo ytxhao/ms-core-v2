@@ -40,9 +40,15 @@ if (sysroot == "") {
   } else if ((is_linux || is_chromeos) && use_sysroot) {
     # By default build against a sysroot image downloaded from Cloud Storage
     # during gclient runhooks.
-     print("=========3 sysroot:$sysroot ")
+    print("=========3 sysroot:$sysroot")
+    print("=========3 current_cpu:$current_cpu")
+    print("=========3 target_sysroot_dir:$target_sysroot_dir")
     if (current_cpu == "x64") {
-      sysroot = "$target_sysroot_dir/debian_sid_amd64-sysroot"
+      if (is_linux) {
+        sysroot = "/"
+      } else {
+        sysroot = "$target_sysroot_dir/debian_sid_amd64-sysroot"
+      }
     } else if (current_cpu == "x86") {
       sysroot = "$target_sysroot_dir/debian_sid_i386-sysroot"
     } else if (current_cpu == "mipsel") {

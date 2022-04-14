@@ -616,6 +616,11 @@ template("gcc_toolchain") {
 # requires a config to pass the appropriate -target option, or else it will
 # actually just be doing a native compile. The invoker can optionally override
 # use_gold too.
+# yuhaoo test for linux
+declare_args() {
+  clang_base_path = "/usr"
+}
+
 template("clang_toolchain") {
   if (defined(invoker.toolprefix)) {
     toolprefix = invoker.toolprefix
@@ -629,8 +634,11 @@ template("clang_toolchain") {
     cxx = "$prefix/clang++"
     ld = cxx
     readelf = "${toolprefix}readelf"
-    ar = "${prefix}/llvm-ar"
-    nm = "${prefix}/llvm-nm"
+    # yuhaoo test for linux
+    # ar = "${prefix}/llvm-ar"
+    # nm = "${prefix}/llvm-nm"
+    ar = "${prefix}/ar"
+    nm = "${prefix}/nm"
 
     forward_variables_from(invoker,
                            [

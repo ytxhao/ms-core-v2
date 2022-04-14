@@ -36,7 +36,7 @@ def parse_args():
         '--os',
         choices=['a', 'i', 'l', 'm'],
         help='The os config can be IGNORED, and decided by os info, or can be "a (Android)", '
-             '"i (iOS)", "l (linux)". Defaults to "a (Android)".')
+             '"i (iOS)", "l (linux)",  "m (Mac)". Defaults to "a (Android)".')
     parser.add_argument(
         '-c',
         '--clean',
@@ -83,7 +83,7 @@ def get_build_args(args):
     elif args.os == "l":  # Linux
         # build_arg_list.append('rtc_use_x11=false')
         # build_arg_list.append('is_chrome_branded=true')
-        build_arg_list.append('openh264_dec=true')
+        # build_arg_list.append('openh264_dec=true')
         # build_arg_list.append('clang_use_chrome_plugins=false')
         build_arg_list.append('is_debug=false' if args.build == 'r' else 'is_debug=true')
 
@@ -182,6 +182,34 @@ def main():
             architectures)
         print("=============mac cmd:"+cmd)
         subprocess.call(cmd, shell=True) 
+
+    if args.os == "l":
+        archs = list(args.arch)
+        architectures = ""
+        for arch in archs:
+            if arch == "arm":
+                arch = "armeabi-v7a"
+            if arch == "arm64":
+                arch = "arm64-v8a"
+            if arch == "x64":
+                arch =  "x86_64"
+            architectures = architectures + " " + arch
+        # architectures = "x86_64"
+        architectures = architectures.strip()
+        if architectures != "x86_64":
+            print("\033[31mArchitecture only supports x64 for linux library\n\033[0m")
+            return
+
+        cmd = "{0} --build-dir {1} --extra-gn-args {2} --arch {3}".format(
+            LINUX_SDK_BUILD_SCRIPT,
+            build_dir,
+            build_args,
+            architectures)
+        subprocess.call(cmd, shell=True)
+
+    end_sec = time.time()
+    consume_sec = end_sec - start_sec
+    print("\033[32m\nDone! Consumed " + str(round(consume_sec, 2)) + " seconds.\n\033[0m")
 
 
 if __name__ == '__main__':
