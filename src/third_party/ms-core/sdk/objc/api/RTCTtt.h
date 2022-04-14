@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RTCTtt : NSObject
 
+@property (nonatomic, assign) BOOL connected;
+
 -(void)t;
 @end
 

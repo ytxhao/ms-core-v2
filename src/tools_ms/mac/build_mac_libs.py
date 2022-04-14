@@ -213,6 +213,9 @@ def main():
     # Dylibs will be combined, all other files are the same across archs.
     # Use distutils instead of shutil to support merging folders.
     logging.info("=====lib_paths[0]:" + lib_paths[0] + " args.output_dir:" + args.output_dir)
+    if  os.path.isdir(os.path.join(args.output_dir, SDK_FRAMEWORK_NAME)):
+        shutil.rmtree(os.path.join(args.output_dir, SDK_FRAMEWORK_NAME))
+
     distutils.dir_util.copy_tree(
         os.path.join(lib_paths[0], SDK_FRAMEWORK_NAME),
         os.path.join(args.output_dir, SDK_FRAMEWORK_NAME), preserve_symlinks = True)
